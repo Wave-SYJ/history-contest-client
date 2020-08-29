@@ -1,17 +1,17 @@
 import { getToken, setToken } from "@/utils/storage";
 import authApi from "@/api/auth";
-import userApi from '@/api/user';
+import userApi from "@/api/user";
 
 const user = {
   namespaced: true,
   state: {
     token: getToken(),
-    name: '',
+    name: "",
     id: -1,
-    sid: '',
-    cardId: '',
-    role: '',
-    status: ''
+    sid: "",
+    cardId: "",
+    role: "",
+    status: ""
   },
 
   mutations: {
@@ -31,26 +31,32 @@ const user = {
   actions: {
     // 登录
     login({ commit }, userInfo) {
-      userInfo.sid = userInfo.sid.trim()
+      userInfo.sid = userInfo.sid.trim();
       return new Promise((resolve, reject) => {
-        authApi.login(userInfo).then(res => {
-          setToken(res.token)
-          commit('SET_TOKEN', res.token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
+        authApi
+          .login(userInfo)
+          .then(res => {
+            setToken(res.token);
+            commit("SET_TOKEN", res.token);
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     },
     getInfo({ commit }) {
       return new Promise((resolve, reject) => {
-        userApi.getInfo().then(res => {
-          commit('SET_INFO', res);
-          resolve(res);
-        })
-      }).catch(error => {
-        reject(error)
-      })
+        userApi
+          .getInfo()
+          .then(res => {
+            commit("SET_INFO", res);
+            resolve(res);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     }
   }
 };

@@ -1,8 +1,8 @@
 import axios from "axios";
 import router from "@/router";
-import { getToken } from '@/utils/storage'
+import { getToken } from "@/utils/storage";
 
-axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
+axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -11,7 +11,7 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
-    config.headers['Authorization'] = 'Bearer ' + getToken()
+    config.headers["Authorization"] = "Bearer " + getToken();
     return config;
   },
   error => {
@@ -21,7 +21,10 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    if (response.status === 401 && window.location.toString().substr(-5) !== "login")
+    if (
+      response.status === 401 &&
+      window.location.toString().substr(-5) !== "login"
+    )
       router.push("/login");
 
     return response.data;

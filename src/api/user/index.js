@@ -4,7 +4,7 @@ export default {
   getInfo() {
     return request({
       url: "/user",
-      method: "get",
+      method: "get"
     });
   }
 };

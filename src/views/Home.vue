@@ -12,7 +12,6 @@
         </div>
       </el-header>
       <el-container>
-
         <!-- 内容页面 -->
         <el-main><router-view></router-view></el-main>
       </el-container>
@@ -25,27 +24,26 @@ export default {
   data() {
     return {
       userInfo: {
-        name: '',
-        role: ''
+        name: "",
+        role: ""
       }
     };
   },
   computed: {
     userRole() {
       switch (this.userInfo.role) {
-        case 'ROLE_STUDENT':
-          return '学生';
-        case 'ROLE_ADMIN':
-          return '管理员';
+        case "ROLE_STUDENT":
+          return "学生";
+        case "ROLE_ADMIN":
+          return "管理员";
       }
-      return '';
+      return "";
     }
   },
   created() {
-    this.$store.dispatch('user/getInfo')
-    .then(res => {
+    this.$store.dispatch("user/getInfo").then(() => {
       this.userInfo = this.$store.state.user;
-    })
+    });
   }
 };
 </script>

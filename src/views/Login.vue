@@ -5,7 +5,12 @@
         校史校情知识竞赛
       </div>
 
-      <el-form ref="loginForm" label-width="0" :model="loginForm" :rules="loginRules">
+      <el-form
+        ref="loginForm"
+        label-width="0"
+        :model="loginForm"
+        :rules="loginRules"
+      >
         <!-- 用户名 -->
         <el-form-item>
           <el-input
@@ -47,12 +52,8 @@ export default {
         code: "CODE"
       },
       loginRules: {
-        sid: [
-          { required: true, trigger: "blur", message: "用户名不能为空" }
-        ],
-        password: [
-          { required: true, trigger: "blur", message: "密码不能为空" }
-        ]
+        sid: [{ required: true, trigger: "blur", message: "用户名不能为空" }],
+        password: [{ required: true, trigger: "blur", message: "密码不能为空" }]
         //code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
       },
       redirect: ""
@@ -62,13 +63,12 @@ export default {
     onSubmit() {
       this.$refs.loginForm.validate(valid => {
         if (!valid) return;
-        this.$store.dispatch("login", this.loginForm)
-        .then(() => {
+        this.$store.dispatch("login", this.loginForm).then(() => {
           this.$router.push({ path: this.redirect || "/" });
-        })
-      })
+        });
+      });
     }
-  },
+  }
 };
 </script>
 
