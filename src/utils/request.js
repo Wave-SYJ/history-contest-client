@@ -1,18 +1,18 @@
-import axios from 'axios'
+import axios from "axios";
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 10000
-})
+});
 
 service.interceptors.request.use(
   config => {
-    return config
+    return config;
   },
   error => {
     Promise.reject(error);
   }
-)
+);
 
 service.interceptors.response.use(
   response => {
@@ -22,6 +22,6 @@ service.interceptors.response.use(
   error => {
     return Promise.reject(error);
   }
-)
+);
 
 export default service;

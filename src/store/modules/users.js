@@ -1,5 +1,5 @@
-import { getToken, setToken } from '@/utils/auth';
-import api from '@/api/auth';
+import { getToken, setToken } from "@/utils/auth";
+import api from "@/api/auth";
 
 const user = {
   state: {
@@ -18,14 +18,14 @@ const user = {
       return new Promise((resolve, reject) => {
         api
           .login(userInfo)
-          .then((res) => {
+          .then(res => {
             if (res.code === 200) {
               setToken(res.data);
-              commit('SET_TOKEN', res.data);
+              commit("SET_TOKEN", res.data);
             }
             resolve();
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err);
           });
       });
