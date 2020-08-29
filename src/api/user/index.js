@@ -26,6 +26,13 @@ export default {
       method: "delete"
     });
   },
+  deleteStudents(ids) {
+    return request({
+      url: "user/student",
+      method: "delete",
+      data: ids
+    });
+  },
   insertStudent(student) {
     return request({
       url: "user/student/insert",

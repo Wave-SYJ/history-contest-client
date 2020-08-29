@@ -74,7 +74,6 @@ export default {
           value.meta.role === constants.ROLE_ALL ||
           value.meta.role === this.userInfo.role
       );
-      console.log(res);
       return res;
     }
   }

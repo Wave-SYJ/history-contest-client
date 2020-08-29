@@ -14,6 +14,7 @@
         :data="studentList"
         tooltip-effect="dark"
         style="width: 100%"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column type="index" width="30"> </el-table-column>
         <el-table-column type="selection" width="30"> </el-table-column>
@@ -75,7 +76,8 @@ export default {
       dialogVisible: false,
       editting: false, // true 表示 inserting
       editData: {},
-      loading: false
+      loading: false,
+      multipleSelection: []
     };
   },
   computed: {
@@ -87,13 +89,26 @@ export default {
     this.getStudentList();
   },
   methods: {
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      console.log(val);
+    },
+    async deleteSelectedRow() {
+      await this.$confirm("此操作将永久删除选中的记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
+      await userApi.deleteStudents(
+        this.multipleSelection.map(value => value.id)
+      );
+      this.getStudentList();
+    },
     async getStudentList() {
       const res = await userApi.getStudentList();
-      console.log(res);
       this.studentList = res;
     },
     getTagType(status) {
-      console.log(status);
       switch (status) {
         case constants.STATUS_NOT_START:
           return "info";
