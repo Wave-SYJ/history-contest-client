@@ -1,11 +1,10 @@
 import request from "@/utils/request";
 
 export default {
-  login(data) {
+  getInfo() {
     return request({
-      url: "/auth/login",
-      method: "post",
-      data
+      url: "/user",
+      method: "get",
     });
   }
 };

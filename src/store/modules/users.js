@@ -1,34 +1,56 @@
-import { getToken, setToken } from "@/utils/auth";
-import api from "@/api/auth";
+import { getToken, setToken } from "@/utils/storage";
+import authApi from "@/api/auth";
+import userApi from '@/api/user';
 
 const user = {
+  namespaced: true,
   state: {
-    token: getToken()
+    token: getToken(),
+    name: '',
+    id: -1,
+    sid: '',
+    cardId: '',
+    role: '',
+    status: ''
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token;
+    },
+    SET_INFO: (state, info) => {
+      state.name = info.name || state.name;
+      state.id = info.id || state.id;
+      state.sid = info.sid || state.sid;
+      state.cardId = info.cardId || state.cardId;
+      state.role = info.role || state.role;
+      state.status = info.status || state.status;
     }
   },
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    login({ commit }, userInfo) {
+      userInfo.sid = userInfo.sid.trim()
       return new Promise((resolve, reject) => {
-        api
-          .login(userInfo)
-          .then(res => {
-            if (res.code === 200) {
-              setToken(res.data);
-              commit("SET_TOKEN", res.data);
-            }
-            resolve();
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+        authApi.login(userInfo).then(res => {
+          setToken(res.token)
+          commit('SET_TOKEN', res.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    getInfo({ commit }) {
+      return new Promise((resolve, reject) => {
+        userApi.getInfo().then(res => {
+          commit('SET_INFO', res);
+          resolve(res);
+        })
+      }).catch(error => {
+        reject(error)
+      })
     }
   }
 };

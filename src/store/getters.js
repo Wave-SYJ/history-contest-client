@@ -1,7 +1,5 @@
 const getters = {
-  name: state => state.user.name,
-  sid: state => state.user.sid,
-  cardId: state => state.user.cardId
+  user: state => state.user,
 };
 
 export default getters;
