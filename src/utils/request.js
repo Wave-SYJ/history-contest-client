@@ -21,15 +21,15 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
+    return response.data;
+  },
+  error => {
+    const { response } = error;
     if (
       response.status === 401 &&
       window.location.toString().substr(-5) !== "login"
     )
       router.push("/login");
-
-    return response.data;
-  },
-  error => {
     return Promise.reject(error);
   }
 );

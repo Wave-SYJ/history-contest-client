@@ -4,32 +4,29 @@
       <!-- 页头 -->
       <el-header height="60px">
         <div class="home-header-container">
-          <el-dropdown trigger="click">
-            <span class="el-dropdown-link" style="font-size: 18px">
-              <el-button icon="el-icon-menu"></el-button>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-circle-plus"
-                >狮子头</el-dropdown-item
-              >
-              <el-dropdown-item icon="el-icon-circle-plus-outline"
-                >螺蛳粉</el-dropdown-item
-              >
-              <el-dropdown-item icon="el-icon-check">双皮奶</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-circle-check"
-                >蚵仔煎</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
-          <!-- <i style="font-size: 18px" class="el-icon-menu"></i> -->
-          <h1 style="font-size: 18px">东南大学校史校情知识竞赛</h1>
-          <span style="font-size: 18px">
-            <span class="text-button" @click="logout()">退出</span>
+          <h1 class="home-header-title">东南大学校史校情知识竞赛</h1>
+          <span>
+            <span>欢迎您，{{ userRole }} {{ userInfo.name }} ！</span>
+            <span class="exit" @click="logout()">退出</span>
           </span>
         </div>
       </el-header>
       <el-container>
+        <!-- 导航栏 -->
+        <el-aside width="200px">
+          <el-menu :default-active="$route.matched[1].path" router>
+            <el-menu-item
+              v-for="item in menuList"
+              :key="item.path"
+              :index="item.path"
+            >
+              <template v-slot:title>
+                <i :class="item.meta.icon"></i>
+                <span>{{ item.meta.title }}</span>
+              </template>
+            </el-menu-item>
+          </el-menu>
+        </el-aside>
         <!-- 内容页面 -->
         <el-main><router-view></router-view></el-main>
       </el-container>
@@ -39,8 +36,15 @@
 
 <script>
 import { removeToken } from "@/utils/storage";
+import constants from "@/constants.js";
+import { menuList } from "@/router";
 
 export default {
+  data() {
+    return {
+      constants
+    };
+  },
   created() {
     this.$store.dispatch("user/getInfo");
   },
@@ -49,6 +53,29 @@ export default {
       removeToken();
       this.$router.push("/login");
       this.$store.commit("user/CLEAR_INFO");
+    }
+  },
+  computed: {
+    userInfo() {
+      return this.$store.state.user;
+    },
+    userRole() {
+      switch (this.userInfo.role) {
+        case constants.ROLE_STUDENT:
+          return "学生";
+        case constants.ROLE_ADMIN:
+          return "管理员";
+      }
+      return "";
+    },
+    menuList() {
+      const res = menuList.filter(
+        value =>
+          value.meta.role === constants.ROLE_ALL ||
+          value.meta.role === this.userInfo.role
+      );
+      console.log(res);
+      return res;
     }
   }
 };
@@ -67,8 +94,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     display: flex;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
 
     .home-header-title {
       display: flex;
@@ -77,10 +104,14 @@ export default {
     span {
       display: flex;
       justify-content: space-around;
+
+      * {
+        margin: 10px;
+      }
     }
   }
 
-  .text-button {
+  .exit {
     text-decoration: none;
     color: #1989fa;
     cursor: pointer;

@@ -1,9 +1,161 @@
 <template>
-  <div>Student</div>
+  <el-container>
+    <el-header>
+      <el-col :span="12">
+        <el-button type="primary" @click="handleInsert">添加</el-button>
+        <el-button type="danger" @click="deleteSelectedRow()"
+          >删除选中项</el-button
+        >
+      </el-col>
+    </el-header>
+    <el-main>
+      <el-table
+        v-loading="loading"
+        :data="studentList"
+        tooltip-effect="dark"
+        style="width: 100%"
+      >
+        <el-table-column type="index" width="30"> </el-table-column>
+        <el-table-column type="selection" width="30"> </el-table-column>
+        <el-table-column prop="sid" label="学号"> </el-table-column>
+        <el-table-column prop="cardId" label="一卡通号"> </el-table-column>
+        <el-table-column prop="name" label="姓名"> </el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            <el-tag :type="getTagType(scope.row.status)" disable-transitions>
+              {{ constants[scope.row.status + "_ZH"] }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-main>
+
+    <el-dialog title="编辑" :visible.sync="dialogVisible">
+      <el-form :model="editData">
+        <el-form-item label="学号">
+          <el-input v-model="editData.sid" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="一卡通号">
+          <el-input v-model="editData.cardId" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="editData.name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editting = false">取 消</el-button>
+        <el-button type="primary" @click="submitEdit()">确 定</el-button>
+      </div>
+    </el-dialog>
+  </el-container>
 </template>
 
 <script>
-export default {};
+import userApi from "@/api/user";
+import constants from "@/constants";
+
+export default {
+  data() {
+    return {
+      studentList: [],
+      constants,
+      dialogVisible: false,
+      editting: false, // true 表示 inserting
+      editData: {},
+      loading: false
+    };
+  },
+  computed: {
+    userInfo() {
+      return this.$store.state.user;
+    }
+  },
+  created() {
+    this.getStudentList();
+  },
+  methods: {
+    async getStudentList() {
+      const res = await userApi.getStudentList();
+      console.log(res);
+      this.studentList = res;
+    },
+    getTagType(status) {
+      console.log(status);
+      switch (status) {
+        case constants.STATUS_NOT_START:
+          return "info";
+        case constants.STATUS_STARTED:
+          return "primary";
+        case constants.STATUS_SUBMITTED:
+          return "success";
+      }
+    },
+    handleInsert() {
+      this.editData = {};
+      this.editting = false;
+      this.dialogVisible = true;
+    },
+    handleEdit(index, row) {
+      this.editData = { ...row };
+      this.editting = true;
+      this.dialogVisible = true;
+    },
+    async handleDelete(index, row) {
+      await this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
+      await userApi.deleteStudent(row.id);
+      this.$message({
+        type: "success",
+        message: "删除成功!"
+      });
+    },
+    async submitEdit() {
+      if (this.editting) {
+        await userApi.editStudent(this.editData);
+      } else {
+        this.editData.id = null;
+        await userApi.insertStudent(this.editData);
+      }
+      this.getStudentList();
+      this.editting = false;
+      this.dialogVisible = false;
+    }
+  }
+};
 </script>
 
-<style></style>
+<style lang="scss">
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
+.el-table__expand-icon {
+  height: 30px;
+  width: 50px;
+}
+</style>
