@@ -15,7 +15,21 @@ export const routes = [
   },
   {
     path: "/home",
-    component: () => import("@/views/Home.vue")
+    component: () => import("@/views/Home.vue"),
+    redirect: "/index",
+    children: [
+      {
+        path: "/index",
+        component: () => import("@/views/pages/Welcome.vue")
+      },
+      {
+        path: "/exam"
+      },
+      {
+        path: "/students",
+        component: () => import("@/views/pages/StudentList.vue")
+      }
+    ]
   }
 ];
 

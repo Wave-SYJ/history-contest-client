@@ -4,10 +4,28 @@
       <!-- 页头 -->
       <el-header height="60px">
         <div class="home-header-container">
-          <h1 class="home-header-title">东南大学校史校情知识竞赛</h1>
-          <span>
-            <span>欢迎您，{{ userRole }} {{ userInfo.name }} ！</span>
-            <span class="exit" @click="logout()">退出</span>
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link" style="font-size: 18px">
+              <el-button icon="el-icon-menu"></el-button>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-circle-plus"
+                >狮子头</el-dropdown-item
+              >
+              <el-dropdown-item icon="el-icon-circle-plus-outline"
+                >螺蛳粉</el-dropdown-item
+              >
+              <el-dropdown-item icon="el-icon-check">双皮奶</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-circle-check"
+                >蚵仔煎</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
+          <!-- <i style="font-size: 18px" class="el-icon-menu"></i> -->
+          <h1 style="font-size: 18px">东南大学校史校情知识竞赛</h1>
+          <span style="font-size: 18px">
+            <span class="text-button" @click="logout()">退出</span>
           </span>
         </div>
       </el-header>
@@ -20,30 +38,18 @@
 </template>
 
 <script>
+import { removeToken } from "@/utils/storage";
+
 export default {
-  data() {
-    return {
-      userInfo: {
-        name: "",
-        role: ""
-      }
-    };
-  },
-  computed: {
-    userRole() {
-      switch (this.userInfo.role) {
-        case "ROLE_STUDENT":
-          return "学生";
-        case "ROLE_ADMIN":
-          return "管理员";
-      }
-      return "";
-    }
-  },
   created() {
-    this.$store.dispatch("user/getInfo").then(() => {
-      this.userInfo = this.$store.state.user;
-    });
+    this.$store.dispatch("user/getInfo");
+  },
+  methods: {
+    logout() {
+      removeToken();
+      this.$router.push("/login");
+      this.$store.commit("user/CLEAR_INFO");
+    }
   }
 };
 </script>
@@ -61,8 +67,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     display: flex;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
 
     .home-header-title {
       display: flex;
@@ -71,14 +77,10 @@ export default {
     span {
       display: flex;
       justify-content: space-around;
-
-      * {
-        margin: 10px;
-      }
     }
   }
 
-  .exit {
+  .text-button {
     text-decoration: none;
     color: #1989fa;
     cursor: pointer;

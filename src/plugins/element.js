@@ -12,7 +12,11 @@ import {
   Menu,
   MenuItem,
   Main,
-  PageHeader
+  PageHeader,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Row
 } from "element-ui";
 
 Vue.use(Button);
@@ -28,3 +32,7 @@ Vue.use(Menu);
 Vue.use(MenuItem);
 Vue.use(Main);
 Vue.use(PageHeader);
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(Row);

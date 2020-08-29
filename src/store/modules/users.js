@@ -25,6 +25,15 @@ const user = {
       state.cardId = info.cardId || state.cardId;
       state.role = info.role || state.role;
       state.status = info.status || state.status;
+    },
+    CLEAR_INFO: state => {
+      state.token = getToken();
+      state.name = "";
+      state.id = -1;
+      state.sid = "";
+      state.cardId = "";
+      state.role = "";
+      state.status = "";
     }
   },
 

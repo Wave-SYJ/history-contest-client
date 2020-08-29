@@ -63,7 +63,7 @@ export default {
     onSubmit() {
       this.$refs.loginForm.validate(valid => {
         if (!valid) return;
-        this.$store.dispatch("login", this.loginForm).then(() => {
+        this.$store.dispatch("user/login", this.loginForm).then(() => {
           this.$router.push({ path: this.redirect || "/" });
         });
       });
