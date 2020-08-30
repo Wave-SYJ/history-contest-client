@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 export const menuList = [
   {
     path: "/index",
-    component: () => import("@/views/pages/Welcome.vue"),
+    component: () => import("@/views/pc/pages/Welcome.vue"),
     meta: { title: "主页", role: constants.ROLE_ALL, icon: "el-icon-s-home" }
   },
   {
@@ -20,7 +20,7 @@ export const menuList = [
   },
   {
     path: "/students",
-    component: () => import("@/views/pages/StudentList.vue"),
+    component: () => import("@/views/pc/pages/StudentList.vue"),
     meta: {
       title: "学生列表",
       role: constants.ROLE_ADMIN,
@@ -29,7 +29,7 @@ export const menuList = [
   },
   {
     path: "/choice",
-    component: () => import("@/views/pages/ChoiceQuestionList.vue"),
+    component: () => import("@/views/pc/pages/ChoiceQuestionList.vue"),
     meta: {
       title: "选择题列表",
       role: constants.ROLE_ADMIN,
@@ -38,7 +38,7 @@ export const menuList = [
   },
   {
     path: "/judge",
-    component: () => import("@/views/pages/JudgeQuestionList.vue"),
+    component: () => import("@/views/pc/pages/JudgeQuestionList.vue"),
     meta: {
       title: "判断题列表",
       role: constants.ROLE_ADMIN,
@@ -59,7 +59,7 @@ export const routes = [
   },
   {
     path: "/home",
-    component: () => import("@/views/Home.vue"),
+    component: () => import("@/views/pc/Home.vue"),
     redirect: "/index",
     children: menuList
   }
