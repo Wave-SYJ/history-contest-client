@@ -1,17 +1,22 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import constants from "@/constants.js";
+import { isMobile } from "@/utils/device";
 
 Vue.use(VueRouter);
 
 export const menuList = [
   {
     path: "/index",
-    component: () => import("@/views/pc/pages/Welcome.vue"),
+    component: () =>
+      isMobile()
+        ? import("@/views/mobile/pages/Welcome.vue")
+        : import("@/views/pc/pages/Welcome.vue"),
     meta: { title: "主页", role: constants.ROLE_ALL, icon: "el-icon-s-home" }
   },
   {
     path: "/exam",
+    component: () => import("@/views/mobile/pages/Exam.vue"),
     meta: {
       title: "答题",
       role: constants.ROLE_STUDENT,
@@ -59,7 +64,10 @@ export const routes = [
   },
   {
     path: "/home",
-    component: () => import("@/views/pc/Home.vue"),
+    component: () =>
+      isMobile()
+        ? import("@/views/mobile/Home.vue")
+        : import("@/views/pc/Home.vue"),
     redirect: "/index",
     children: menuList
   }
