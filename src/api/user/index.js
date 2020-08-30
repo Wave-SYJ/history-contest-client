@@ -13,6 +13,16 @@ export default {
       method: "get"
     });
   },
+  getStudentPage(current, size) {
+    return request({
+      url: "/user/student/page",
+      method: "post",
+      data: {
+        pageIndex: current,
+        pageSize: size
+      }
+    });
+  },
   editStudent(student) {
     return request({
       url: "user/student/edit",

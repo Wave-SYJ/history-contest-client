@@ -15,21 +15,17 @@
       <el-table
         height="100%"
         v-loading="loading"
-        :data="studentList"
+        :data="questionList"
         tooltip-effect="dark"
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column type="selection" width="30"> </el-table-column>
-        <el-table-column prop="sid" label="学号"> </el-table-column>
-        <el-table-column prop="cardId" label="一卡通号"> </el-table-column>
-        <el-table-column prop="name" label="姓名"> </el-table-column>
-        <el-table-column label="状态">
+        <el-table-column prop="question" label="问题"> </el-table-column>
+        <el-table-column label="答案">
           <template slot-scope="scope">
-            <el-tag :type="getTagType(scope.row.status)" disable-transitions>
-              {{ constants[scope.row.status + "_ZH"] }}
-            </el-tag>
+            {{ scope.row.answer == 0 ? "错误" : "正确" }}
           </template>
         </el-table-column>
         <el-table-column label="操作" width="175">
@@ -47,11 +43,10 @@
         </el-table-column>
       </el-table>
     </el-main>
-
     <el-footer style="margin: 10px auto; height: auto">
       <el-pagination
-        @size-change="getStudentList"
-        @current-change="getStudentList"
+        @size-change="getQuestionList"
+        @current-change="getQuestionList"
         :current-page.sync="currentPage"
         :page-sizes="[50, 100, 150, 200]"
         :page-size.sync="pageSize"
@@ -63,14 +58,14 @@
 
     <el-dialog title="编辑" :visible.sync="dialogVisible">
       <el-form :model="editData">
-        <el-form-item label="学号">
-          <el-input v-model="editData.sid" autocomplete="off"></el-input>
+        <el-form-item label="问题">
+          <el-input v-model="editData.question" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="一卡通号">
-          <el-input v-model="editData.cardId" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="editData.name" autocomplete="off"></el-input>
+        <el-form-item label="答案">
+          <el-select v-model="editData.answer" placeholder="请选择答案">
+            <el-option label="错误" :value="0"></el-option>
+            <el-option label="正确" :value="1"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -88,13 +83,13 @@
 </template>
 
 <script>
-import userApi from "@/api/user";
+import judgeApi from "@/api/judgeQuestion";
 import constants from "@/constants";
 
 export default {
   data() {
     return {
-      studentList: [],
+      questionList: [],
       constants,
       dialogVisible: false,
       editting: false, // true 表示 inserting
@@ -113,12 +108,11 @@ export default {
     }
   },
   created() {
-    this.getStudentList();
+    this.getQuestionList();
   },
   methods: {
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(val);
     },
     async deleteSelectedRow() {
       await this.$confirm("此操作将永久删除选中的记录, 是否继续?", "提示", {
@@ -126,25 +120,18 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       });
-      await userApi.deleteStudents(
+      await judgeApi.deleteQuestions(
         this.multipleSelection.map(value => value.id)
       );
-      this.getStudentList();
+      this.getQuestionList();
     },
-    async getStudentList() {
-      const res = await userApi.getStudentPage(this.currentPage, this.pageSize);
-      this.studentList = res.list;
+    async getQuestionList() {
+      const res = await judgeApi.getQuestionPage(
+        this.currentPage,
+        this.pageSize
+      );
+      this.questionList = res.list;
       this.total = res.total;
-    },
-    getTagType(status) {
-      switch (status) {
-        case constants.STATUS_NOT_START:
-          return "info";
-        case constants.STATUS_STARTED:
-          return "primary";
-        case constants.STATUS_SUBMITTED:
-          return "success";
-      }
     },
     handleInsert() {
       this.editData = {};
@@ -162,21 +149,21 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       });
-      await userApi.deleteStudent(row.id);
+      await judgeApi.deleteQuestion(row.id);
       this.$message({
         type: "success",
         message: "删除成功!"
       });
-      this.getStudentList();
+      this.getQuestionList();
     },
     async submitEdit() {
       if (this.editting) {
-        await userApi.editStudent(this.editData);
+        await judgeApi.editQuestion(this.editData);
       } else {
         this.editData.id = null;
-        await userApi.insertStudent(this.editData);
+        await judgeApi.insertQuestion(this.editData);
       }
-      this.getStudentList();
+      this.getQuestionList();
       this.editting = false;
       this.dialogVisible = false;
     }
@@ -184,4 +171,4 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

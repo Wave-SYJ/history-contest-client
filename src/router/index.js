@@ -26,6 +26,24 @@ export const menuList = [
       role: constants.ROLE_ADMIN,
       icon: "el-icon-s-grid"
     }
+  },
+  {
+    path: "/choice",
+    component: () => import("@/views/pages/ChoiceQuestionList.vue"),
+    meta: {
+      title: "选择题列表",
+      role: constants.ROLE_ADMIN,
+      icon: "el-icon-s-grid"
+    }
+  },
+  {
+    path: "/judge",
+    component: () => import("@/views/pages/JudgeQuestionList.vue"),
+    meta: {
+      title: "判断题列表",
+      role: constants.ROLE_ADMIN,
+      icon: "el-icon-s-grid"
+    }
   }
 ];
 

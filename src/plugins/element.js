@@ -24,7 +24,11 @@ import {
   MessageBox,
   Message,
   Loading,
-  Col
+  Col,
+  Select,
+  Option,
+  Pagination,
+  Footer
 } from "element-ui";
 
 Vue.use(Button);
@@ -49,6 +53,10 @@ Vue.use(TableColumn);
 Vue.use(Tag);
 Vue.use(Dialog);
 Vue.use(Col);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(Pagination);
+Vue.use(Footer);
 Vue.use(Loading.directive);
 
 const msgbox = MessageBox;
