@@ -9,7 +9,10 @@ import {
   CellGroup,
   Grid,
   GridItem,
-  Button
+  Button,
+  CountDown,
+  Radio,
+  RadioGroup
 } from "vant";
 
 Vue.use(Col);
@@ -22,3 +25,6 @@ Vue.use(CellGroup);
 Vue.use(Grid);
 Vue.use(GridItem);
 Vue.use(Button);
+Vue.use(CountDown);
+Vue.use(Radio);
+Vue.use(RadioGroup);

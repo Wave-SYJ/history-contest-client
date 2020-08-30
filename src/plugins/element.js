@@ -28,7 +28,8 @@ import {
   Select,
   Option,
   Pagination,
-  Footer
+  Footer,
+  ButtonGroup
 } from "element-ui";
 
 Vue.use(Button);
@@ -58,6 +59,7 @@ Vue.use(Option);
 Vue.use(Pagination);
 Vue.use(Footer);
 Vue.use(Loading.directive);
+Vue.use(ButtonGroup);
 
 const msgbox = MessageBox;
 Vue.prototype.$msgbox = msgbox;

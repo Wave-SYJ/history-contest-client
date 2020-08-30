@@ -2,6 +2,12 @@
   <router-view></router-view>
 </template>
 
-<script></script>
+<script>
+export default {
+  created() {
+    this.$store.dispatch("user/getInfo");
+  }
+};
+</script>
 
 <style></style>

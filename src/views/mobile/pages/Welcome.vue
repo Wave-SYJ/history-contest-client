@@ -1,9 +1,6 @@
 <template>
   <div>
     <van-nav-bar title="东南大学校史校情知识竞赛" @click-right="onClickRight">
-      <template #left>
-        <van-icon name="arrow-left" size="18" color="black" />
-      </template>
       <template #right>
         <van-icon name="user-o" size="18" color="black" />
       </template>
@@ -19,6 +16,12 @@
         <van-cell title="学号" :value="userInfo.sid" />
         <van-cell title="一卡通号" :value="userInfo.cardId" />
       </van-cell-group>
+
+      <van-row style="padding: 1rem">
+        <el-button style="width: 100%" type="danger" @click="onLogout">
+          退出
+        </el-button>
+      </van-row>
     </van-popup>
 
     <van-button type="info" @click="onStartExam">主要按钮</van-button>
@@ -26,6 +29,8 @@
 </template>
 
 <script>
+import { removeToken } from "@/utils/storage";
+
 export default {
   data() {
     return {
@@ -37,7 +42,12 @@ export default {
       this.showPopup = !this.showPopup;
     },
     onStartExam() {
-      this.$router.push("/exam");
+      this.$router.push("/exam/1");
+    },
+    onLogout() {
+      removeToken();
+      this.$router.push("/login");
+      this.$store.commit("user/CLEAR_INFO");
     }
   },
   created() {

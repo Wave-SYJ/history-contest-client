@@ -139,6 +139,7 @@ export default {
     getTagType(status) {
       switch (status) {
         case constants.STATUS_NOT_START:
+        case constants.STATUS_GENERATED:
           return "info";
         case constants.STATUS_STARTED:
           return "primary";

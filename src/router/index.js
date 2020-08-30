@@ -15,7 +15,7 @@ export const menuList = [
     meta: { title: "主页", role: constants.ROLE_ALL, icon: "el-icon-s-home" }
   },
   {
-    path: "/exam",
+    path: "/exam/:id",
     component: () => import("@/views/mobile/pages/Exam.vue"),
     meta: {
       title: "答题",
