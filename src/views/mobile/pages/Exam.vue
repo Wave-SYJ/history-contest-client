@@ -37,18 +37,35 @@
         :currentQuestion="currentQuestion"
         :currentType="currentType"
         :currentId="$route.params.id"
-        :currentAnswer="currentAnswer"
+        :currentAnswer="[currentAnswer]"
         :remainTime="remainTime"
         @change="onCurrentAnswerChanged"
       >
       </Question>
 
       <div class="button-group">
-        <el-button icon="el-icon-arrow-left">上一页</el-button>
-        <el-button type="primary">
-          下一页
-          <i class="el-icon-arrow-right el-icon--right"></i>
+        <el-button class="submit-button" @click="onSubmit">
+          交卷
         </el-button>
+        <div class="page-button-group">
+          <el-button
+            icon="el-icon-arrow-left"
+            @click="onPageChange(-1)"
+            :disabled="$route.params.id == 1"
+            >上一页</el-button
+          >
+          <el-button
+            type="primary"
+            @click="onPageChange(1)"
+            :disabled="
+              $route.params.id ==
+                paper.choiceAnswerSheet.length + paper.judgeAnswerSheet.length
+            "
+          >
+            下一页
+            <i class="el-icon-arrow-right el-icon--right"></i>
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -72,37 +89,51 @@ export default {
     };
   },
   methods: {
+    onSubmit() {
+      paperApi.submit();
+    },
+    onPageChange(num) {
+      let nextPage = parseInt(this.$route.params.id) + num;
+      if (
+        nextPage >= 1 &&
+        nextPage <= constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM
+      )
+        this.$router.replace("/exam/" + nextPage);
+    },
     onCurrentAnswerChanged(name) {
-      if (this.currentType === "选择题")
-        this.paper.choiceAnswerSheet[this.realCurrentIndex] = name;
-      else this.paper.judgeAnswerSheet[this.realCurrentIndex] = name;
-      console.log(this.paper);
+      if (this.currentType === "选择题") {
+        this.paper.choiceAnswerSheet[this.realCurrentIndex - 1] = name;
+        paperApi.selectChoiceAnswer(this.paper.choiceAnswerSheet);
+      } else {
+        this.paper.judgeAnswerSheet[this.realCurrentIndex - 1] = name;
+        paperApi.selectJudgeAnswer(this.paper.judgeAnswerSheet);
+      }
     },
     onClickRight() {
       this.showPopup = !this.showPopup;
     },
     async getPaper() {
       if (this.userInfo.status === constants.STATUS_NOT_START) {
-        this.paper = await paperApi.generatePaper();
+        const tmpPaper = await paperApi.generatePaper();
+        this.paper = tmpPaper;
+        console.log(tmpPaper);
         this.$store.commit("user/SET_INFO", {
           status: constants.STATUS_GENERATED
         });
       }
 
       if (this.userInfo.status === constants.STATUS_GENERATED) {
-        this.startTime = new Date();
-        await paperApi.calibrateTime(this.startTime);
+        this.paper.startTime = new Date();
+        await paperApi.calibrateTime(this.paper.startTime);
         this.$store.commit("user/SET_INFO", {
           status: constants.STATUS_STARTED
         });
       }
 
-      this.paper = await paperApi.getPaper();
+      if (this.paper.id === null) this.paper = await paperApi.getPaper();
 
       this.remainTime =
         constants.TIME_LIMIT - (new Date().getTime() - this.paper.startTime);
-      console.log(this.remainTime);
-      console.log(this.paper);
     }
   },
   components: {
@@ -152,8 +183,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button-group {
+.submit-button {
   position: absolute;
-  right: 10px;
+  left: 1rem;
+}
+
+.page-button-group {
+  position: absolute;
+  right: 1rem;
 }
 </style>

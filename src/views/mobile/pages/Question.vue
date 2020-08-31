@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-cell :title="`#${currentId} ${currentType}`">
+    <van-cell :title="`#${currentId} ${currentType}（${score}分）`">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #default>
         <van-count-down :time="remainTime">
@@ -25,10 +25,18 @@
           v-model="updatedAnswer"
           @change="name => $emit('change', name)"
         >
-          <van-radio :name="0">{{ currentQuestion.choiceA }}</van-radio>
-          <van-radio :name="1">{{ currentQuestion.choiceB }}</van-radio>
-          <van-radio :name="2">{{ currentQuestion.choiceC }}</van-radio>
-          <van-radio :name="3">{{ currentQuestion.choiceD }}</van-radio>
+          <van-radio :name="0">
+            {{ currentType == "选择题" ? currentQuestion.choiceA : "正确" }}
+          </van-radio>
+          <van-radio :name="1">
+            {{ currentType == "选择题" ? currentQuestion.choiceB : "错误" }}
+          </van-radio>
+          <van-radio v-show="currentType == '选择题'" :name="2">
+            {{ currentQuestion.choiceC }}
+          </van-radio>
+          <van-radio v-show="currentType == '选择题'" :name="3">
+            {{ currentQuestion.choiceD }}
+          </van-radio>
         </van-radio-group>
       </div>
     </div>
@@ -36,6 +44,8 @@
 </template>
 
 <script>
+import constants from "@/constants";
+
 export default {
   data() {
     return {
@@ -53,7 +63,18 @@ export default {
     "currentId",
     "currentAnswer",
     "remainTime"
-  ]
+  ],
+  watch: {
+    currentAnswer(newValue) {
+      this.updatedAnswer = newValue[0];
+    }
+  },
+  computed: {
+    score() {
+      if (this.currentType === "选择题") return constants.CHOICE_QUESTION_SCORE;
+      else return constants.JUDGE_QUESTION_SCORE;
+    }
+  }
 };
 </script>
 

@@ -21,5 +21,31 @@ export default {
       url: "/paper",
       method: "get"
     });
+  },
+  selectChoiceAnswer(answerSheet) {
+    return request({
+      url: "/paper/choice",
+      method: "put",
+      data: answerSheet
+    });
+  },
+  selectJudgeAnswer(answerSheet) {
+    return request({
+      url: "paper/judge",
+      method: "put",
+      data: answerSheet
+    });
+  },
+  submit() {
+    return request({
+      url: "paper/submit",
+      method: "put"
+    });
+  },
+  getCompletePaper() {
+    return request({
+      url: "paper/complete",
+      method: "get"
+    });
   }
 };
