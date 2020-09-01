@@ -22,27 +22,77 @@
         :style="{ height: '100%', width: '70%' }"
       >
         <van-cell-group title="答题信息">
-          <van-grid :column-num="3">
+          <van-grid :column-num="3" :border="true" clickable>
             <van-grid-item
-              v-for="value in 30"
+              v-for="value in totalQuestion"
               :key="value"
-              icon="photo-o"
               :text="value.toString()"
-            />
+              :to="'/exam/' + value"
+              :replace="true"
+              @click="showPopup = false"
+              :class="{ 'grid-item-selected': $route.params.id == value }"
+            >
+              <template #icon>
+                <div :class="['circle', { selected: isSelected(value) }]"></div>
+              </template>
+            </van-grid-item>
           </van-grid>
         </van-cell-group>
       </van-popup>
 
-      <Question
-        :currentQuestion="currentQuestion"
-        :currentType="currentType"
-        :currentId="$route.params.id"
-        :currentAnswer="[currentAnswer]"
-        :remainTime="remainTime"
-        @change="onCurrentAnswerChanged"
-      >
-      </Question>
+      <van-cell :title="`#${$route.params.id} ${currentType}（${score}分）`">
+        <template #default>
+          <van-count-down :time="remainTime">
+            <template #default="timeData">
+              <span class="block">{{ formatTimeNumber(timeData.hours) }}</span>
+              <span class="colon">:</span>
+              <span class="block">{{
+                formatTimeNumber(timeData.minutes)
+              }}</span>
+              <span class="colon">:</span>
+              <span class="block">{{
+                formatTimeNumber(timeData.seconds)
+              }}</span>
+            </template>
+          </van-count-down>
+        </template>
+      </van-cell>
 
+      <div class="question">
+        <h3 class="question-head">
+          {{ currentQuestion.question }}
+        </h3>
+
+        <div class="question-body">
+          <van-radio-group
+            v-model="selectedAnswer[0]"
+            @change="onCurrentAnswerChanged"
+          >
+            <van-radio :name="0">
+              {{
+                currentType == "选择题"
+                  ? "A. " + currentQuestion.choiceA
+                  : "正确"
+              }}
+            </van-radio>
+            <van-radio :name="1">
+              {{
+                currentType == "选择题"
+                  ? "B. " + currentQuestion.choiceB
+                  : "错误"
+              }}
+            </van-radio>
+            <van-radio v-show="currentType == '选择题'" :name="2">
+              {{ "C. " + currentQuestion.choiceC }}
+            </van-radio>
+            <van-radio v-show="currentType == '选择题'" :name="3">
+              {{ "D. " + currentQuestion.choiceD }}
+            </van-radio>
+          </van-radio-group>
+        </div>
+      </div>
+    </div>
+    <div>
       <div class="button-group">
         <el-button class="submit-button" @click="onSubmit">
           交卷
@@ -74,7 +124,6 @@
 <script>
 import constants from "@/constants";
 import paperApi from "@/api/paper";
-import Question from "./Question.vue";
 
 export default {
   data() {
@@ -85,42 +134,54 @@ export default {
         choiceAnswerSheet: [],
         judgeAnswerSheet: []
       },
-      remainTime: 24 * 60 * 60 * 3600 * 1000
+      remainTime: 24 * 60 * 60 * 3600 * 1000,
+      selectedAnswer: [-1]
     };
   },
   methods: {
+    isSelected(id) {
+      if (id <= constants.CHOICE_QUESTION_NUM)
+        return this.paper.choiceAnswerSheet[id - 1] != -1;
+      else
+        return (
+          this.paper.judgeAnswerSheet[id - constants.CHOICE_QUESTION_NUM - 1] !=
+          -1
+        );
+    },
     onSubmit() {
-      paperApi.submit();
+      paperApi.submit(
+        this.paper.choiceAnswerSheet,
+        this.paper.judgeAnswerSheet
+      );
+    },
+    formatTimeNumber(num) {
+      return num < 10 ? "0" + num : num;
     },
     onPageChange(num) {
       let nextPage = parseInt(this.$route.params.id) + num;
       if (
         nextPage >= 1 &&
         nextPage <= constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM
-      )
+      ) {
         this.$router.replace("/exam/" + nextPage);
+        this.selectedAnswer[0] = this.currentAnswer;
+      }
     },
     onCurrentAnswerChanged(name) {
       if (this.currentType === "选择题") {
         this.paper.choiceAnswerSheet[this.realCurrentIndex - 1] = name;
-        paperApi.selectChoiceAnswer(this.paper.choiceAnswerSheet);
       } else {
         this.paper.judgeAnswerSheet[this.realCurrentIndex - 1] = name;
-        paperApi.selectJudgeAnswer(this.paper.judgeAnswerSheet);
       }
     },
     onClickRight() {
       this.showPopup = !this.showPopup;
     },
     async getPaper() {
-      if (this.userInfo.status === constants.STATUS_NOT_START) {
-        const tmpPaper = await paperApi.generatePaper();
-        this.paper = tmpPaper;
-        console.log(tmpPaper);
-        this.$store.commit("user/SET_INFO", {
-          status: constants.STATUS_GENERATED
-        });
-      }
+      this.paper = await paperApi.generatePaper();
+      this.$store.commit("user/SET_INFO", {
+        status: constants.STATUS_GENERATED
+      });
 
       if (this.userInfo.status === constants.STATUS_GENERATED) {
         this.paper.startTime = new Date();
@@ -130,14 +191,9 @@ export default {
         });
       }
 
-      if (this.paper.id === null) this.paper = await paperApi.getPaper();
-
       this.remainTime =
         constants.TIME_LIMIT - (new Date().getTime() - this.paper.startTime);
     }
-  },
-  components: {
-    Question
   },
   computed: {
     userInfo() {
@@ -148,6 +204,10 @@ export default {
       if (this.paper.id === null) return 0;
       if (index <= constants.CHOICE_QUESTION_NUM) return index;
       else return index - constants.CHOICE_QUESTION_NUM;
+    },
+    score() {
+      if (this.currentType === "选择题") return constants.CHOICE_QUESTION_SCORE;
+      else return constants.JUDGE_QUESTION_SCORE;
     },
     currentQuestion() {
       let index = this.$route.params.id;
@@ -174,6 +234,9 @@ export default {
         return this.paper.judgeAnswerSheet[
           index - constants.CHOICE_QUESTION_NUM - 1
         ];
+    },
+    totalQuestion() {
+      return constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM;
     }
   },
   created() {
@@ -191,5 +254,65 @@ export default {
 .page-button-group {
   position: absolute;
   right: 1rem;
+}
+
+.circle {
+  margin-bottom: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid black;
+  border-radius: 50%;
+
+  &.selected {
+    background-color: #00c3ff;
+  }
+}
+
+.van-row {
+  margin: 1rem;
+}
+
+.colon {
+  display: inline-block;
+  margin: 0 4px;
+  color: #ee0a24;
+}
+.block {
+  display: inline-block;
+  width: 22px;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  background-color: #ee0a24;
+  border-radius: 4px;
+}
+
+.question {
+  width: 100%;
+  padding: 1rem;
+  margin: 0;
+  box-sizing: border-box;
+  text-align: center;
+
+  .question-head {
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+  }
+
+  .question-body {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+    padding-top: 2rem;
+
+    .van-radio {
+      line-height: 2rem;
+      min-height: 1.7rem;
+    }
+  }
+}
+
+.grid-item-selected {
+  border-bottom: lightgreen solid 5px;
 }
 </style>

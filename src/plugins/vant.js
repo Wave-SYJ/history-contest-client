@@ -12,7 +12,8 @@ import {
   Button,
   CountDown,
   Radio,
-  RadioGroup
+  RadioGroup,
+  NoticeBar
 } from "vant";
 
 Vue.use(Col);
@@ -28,3 +29,4 @@ Vue.use(Button);
 Vue.use(CountDown);
 Vue.use(Radio);
 Vue.use(RadioGroup);
+Vue.use(NoticeBar);

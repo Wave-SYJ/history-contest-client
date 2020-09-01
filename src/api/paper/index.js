@@ -11,9 +11,7 @@ export default {
     return request({
       url: "/paper/calibrate",
       method: "post",
-      data: {
-        time
-      }
+      data: time
     });
   },
   getPaper() {
@@ -36,15 +34,25 @@ export default {
       data: answerSheet
     });
   },
-  submit() {
+  submit(choiceAnswers, judgeAnswers) {
     return request({
       url: "paper/submit",
-      method: "put"
+      method: "put",
+      data: {
+        choice: choiceAnswers,
+        judge: judgeAnswers
+      }
     });
   },
   getCompletePaper() {
     return request({
       url: "paper/complete",
+      method: "get"
+    });
+  },
+  getScore() {
+    return request({
+      url: "paper/score",
       method: "get"
     });
   }

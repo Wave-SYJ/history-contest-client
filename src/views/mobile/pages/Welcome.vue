@@ -24,20 +24,61 @@
       </van-row>
     </van-popup>
 
-    <van-button type="info" @click="onStartExam">主要按钮</van-button>
+    <div class="welcome" v-if="userInfo.status !== constants.STATUS_SUBMITTED">
+      <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
+      <p>
+        本次竞赛共有
+        {{ constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM }}
+        小题，包含：
+      </p>
+      <ul>
+        <li>
+          选择题 {{ constants.CHOICE_QUESTION_NUM }} 题，每题
+          {{ constants.CHOICE_QUESTION_SCORE }} 分。
+        </li>
+        <li>
+          判断题 {{ constants.JUDGE_QUESTION_NUM }} 题，每题
+          {{ constants.JUDGE_QUESTION_SCORE }} 分。
+        </li>
+      </ul>
+      <p>时间限制为 {{ constants.TIME_LIMIT / 60 / 1000 }} 分钟。</p>
+      <p>答题过程中请不要中途退出。</p>
+
+      <div>
+        <van-button type="info" @click="onStartExam">
+          开始答题
+        </van-button>
+      </div>
+    </div>
+
+    <div class="welcome" v-else>
+      <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
+      <p>您的得分：</p>
+      <p>{{ score }}</p>
+      <van-button type="info" @click="onGetDetails">
+        查看详情
+      </van-button>
+    </div>
   </div>
 </template>
 
 <script>
 import { removeToken } from "@/utils/storage";
+import paperApi from "@/api/paper";
+import constants from "@/constants";
 
 export default {
   data() {
     return {
-      showPopup: false
+      showPopup: false,
+      constants,
+      score: 0
     };
   },
   methods: {
+    onGetDetails() {
+      this.$router.push("/details");
+    },
     onClickRight() {
       this.showPopup = !this.showPopup;
     },
@@ -50,8 +91,10 @@ export default {
       this.$store.commit("user/CLEAR_INFO");
     }
   },
-  created() {
-    this.$store.dispatch("user/getInfo");
+  async created() {
+    await this.$store.dispatch("user/getInfo");
+    if (this.userInfo.status === constants.STATUS_SUBMITTED)
+      this.score = await paperApi.getScore();
   },
   computed: {
     userInfo() {
@@ -61,4 +104,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.welcome {
+  width: 70%;
+  left: 15%;
+  right: 15%;
+  position: absolute;
+
+  text-align: center;
+}
+</style>

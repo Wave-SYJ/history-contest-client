@@ -49,6 +49,13 @@ export const menuList = [
       role: constants.ROLE_ADMIN,
       icon: "el-icon-s-grid"
     }
+  },
+  {
+    path: "/details",
+    component: () => import("@/views/mobile/pages/Details.vue"),
+    meta: {
+      role: constants.ROLE_STUDENT
+    }
   }
 ];
 
