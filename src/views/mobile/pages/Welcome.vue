@@ -83,11 +83,11 @@ export default {
       this.showPopup = !this.showPopup;
     },
     onStartExam() {
-      this.$router.push("/exam/1");
+      this.$router.replace("/exam/1");
     },
     onLogout() {
       removeToken();
-      this.$router.push("/login");
+      this.$router.replace("/login");
       this.$store.commit("user/CLEAR_INFO");
     }
   },

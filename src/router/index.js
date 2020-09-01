@@ -13,6 +13,13 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
   return originalPush.call(this, location).catch(err => err);
 };
 
+const originalReplace = VueRouter.prototype.replace;
+VueRouter.prototype.replace = function replace(location, onResolve, onReject) {
+  if (onResolve || onReject)
+    return originalReplace.call(this, location, onResolve, onReject);
+  return originalReplace.call(this, location).catch(err => err);
+};
+
 export const menuList = [
   {
     path: "/index",
@@ -107,16 +114,19 @@ const router = new VueRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
-  console.log(to);
-
-  const role = store.state.user.role;
-  const status = store.state.user.status;
-
+router.beforeEach(async (to, from, next) => {
   if (to.name == "login" || to.name == "index") {
     next();
     return;
   }
+
+  if (store.state.user.id == -1) {
+    await store.dispatch("user/getInfo");
+  }
+
+  const role = store.state.user.role;
+  const status = store.state.user.status;
+
   if (
     to.meta.role.some(r => r == constants.ROLE_ADMIN) &&
     role == constants.ROLE_ADMIN

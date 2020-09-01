@@ -1,14 +1,7 @@
 <template>
   <div>
     <div>
-      <van-nav-bar
-        title="东南大学校史校情知识竞赛"
-        @click-right="onClickRight"
-        @click-left="$router.back(-1)"
-      >
-        <template #left>
-          <van-icon name="arrow-left" size="18" color="black" />
-        </template>
+      <van-nav-bar title="东南大学校史校情知识竞赛" @click-right="onClickRight">
         <template #right>
           <div style="font-size: 18px">
             <i class="el-icon-s-fold"></i>
@@ -148,11 +141,15 @@ export default {
           -1
         );
     },
-    onSubmit() {
-      paperApi.submit(
+    async onSubmit() {
+      await paperApi.submit(
         this.paper.choiceAnswerSheet,
         this.paper.judgeAnswerSheet
       );
+      this.$store.commit("user/SET_INFO", {
+        status: constants.STATUS_SUBMITTED
+      });
+      this.$router.replace("/details");
     },
     formatTimeNumber(num) {
       return num < 10 ? "0" + num : num;

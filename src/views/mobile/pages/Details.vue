@@ -31,7 +31,10 @@
       </van-row>
     </van-popup>
 
-    <van-notice-bar :scrollable="false" text="您的成绩：40 / 100" />
+    <van-notice-bar
+      :scrollable="false"
+      :text="`您的成绩：${completePaper.score} / 100`"
+    />
     <div class="details">
       <h2 class="details-header">答题详情</h2>
 
@@ -158,7 +161,6 @@ export default {
   },
   async created() {
     this.completePaper = await paperApi.getCompletePaper();
-    console.log(this.completePaper);
   }
 };
 </script>

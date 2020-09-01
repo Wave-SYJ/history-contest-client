@@ -5,7 +5,7 @@
 <script>
 export default {
   created() {
-    this.$store.dispatch("user/getInfo");
+    if (this.$store.state.user.id == -1) this.$store.dispatch("user/getInfo");
   }
 };
 </script>
