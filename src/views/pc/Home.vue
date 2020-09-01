@@ -69,10 +69,8 @@ export default {
       return "";
     },
     menuList() {
-      const res = menuList.filter(
-        value =>
-          value.meta.role === constants.ROLE_ALL ||
-          value.meta.role === this.userInfo.role
+      const res = menuList.filter(value =>
+        value.meta.role.some(s => s === this.userInfo.role)
       );
       return res;
     }
