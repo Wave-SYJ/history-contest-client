@@ -32,6 +32,9 @@ import {
   ButtonGroup
 } from "element-ui";
 
+const msgbox = MessageBox;
+const loading = Loading;
+
 Vue.use(Button);
 Vue.use(Form);
 Vue.use(FormItem);
@@ -58,12 +61,12 @@ Vue.use(Select);
 Vue.use(Option);
 Vue.use(Pagination);
 Vue.use(Footer);
-Vue.use(Loading.directive);
+Vue.use(loading.directive);
 Vue.use(ButtonGroup);
 
-const msgbox = MessageBox;
 Vue.prototype.$msgbox = msgbox;
 Vue.prototype.$alert = msgbox.alert;
 Vue.prototype.$confirm = msgbox.confirm;
 Vue.prototype.$prompt = msgbox.prompt;
 Vue.prototype.$message = Message;
+Vue.prototype.$loading = loading.service;

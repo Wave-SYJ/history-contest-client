@@ -16,7 +16,7 @@
     <van-popup
       v-model="showPopup"
       position="right"
-      :style="{ height: '100%', width: '70%' }"
+      :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
     >
       <van-cell-group title="学生信息">
         <van-cell title="姓名" :value="userInfo.name" />

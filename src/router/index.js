@@ -20,12 +20,19 @@ VueRouter.prototype.replace = function replace(location, onResolve, onReject) {
   return originalReplace.call(this, location).catch(err => err);
 };
 
+async function role() {
+  if (store.state.user.id == -1) {
+    await store.dispatch("user/getInfo");
+  }
+  return store.state.user.role;
+}
+
 export const menuList = [
   {
     path: "/index",
     name: "index",
-    component: () =>
-      isMobile()
+    component: async () =>
+      (await role()) == constants.ROLE_STUDENT
         ? import("@/views/mobile/pages/Welcome.vue")
         : import("@/views/pc/pages/Welcome.vue"),
     meta: {

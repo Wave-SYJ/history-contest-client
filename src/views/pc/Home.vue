@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%" v-if="userRole != '学生'">
     <el-container style="height: 100%">
       <!-- 页头 -->
       <el-header height="60px">
@@ -32,6 +32,7 @@
       </el-container>
     </el-container>
   </div>
+  <router-view v-else></router-view>
 </template>
 
 <script>
