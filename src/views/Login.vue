@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import constants from "@/constants";
+
 export default {
   data() {
     return {
@@ -55,17 +57,22 @@ export default {
         sid: [{ required: true, trigger: "blur", message: "用户名不能为空" }],
         password: [{ required: true, trigger: "blur", message: "密码不能为空" }]
         //code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
-      },
-      redirect: ""
+      }
     };
   },
   methods: {
-    onSubmit() {
-      this.$refs.loginForm.validate(valid => {
+    async onSubmit() {
+      this.$refs.loginForm.validate(async valid => {
         if (!valid) return;
-        this.$store.dispatch("user/login", this.loginForm).then(() => {
-          this.$router.push({ path: this.redirect || "/" });
-        });
+        await this.$store.dispatch("user/login", this.loginForm);
+        if (this.$store.state.user.id == -1)
+          await this.$store.dispatch("user/getInfo");
+        const push =
+          this.$store.state.user.role === constants.ROLE_STUDENT
+            ? "/student/home"
+            : "/admin/home";
+
+        this.$router.push({ path: this.redirect || push });
       });
     }
   }

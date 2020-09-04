@@ -77,13 +77,13 @@ export default {
   },
   methods: {
     onGetDetails() {
-      this.$router.push("/details");
+      this.$router.push("/student/details");
     },
     onClickRight() {
       this.showPopup = !this.showPopup;
     },
     onStartExam() {
-      this.$router.replace("/exam/1");
+      this.$router.replace("/student/exam/1");
     },
     onLogout() {
       removeToken();

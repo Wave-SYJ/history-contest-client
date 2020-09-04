@@ -20,7 +20,7 @@
               v-for="value in totalQuestion"
               :key="value"
               :text="value.toString()"
-              :to="'/exam/' + value"
+              :to="'/student/exam/' + value"
               :replace="true"
               @click="showPopup = false"
               :class="{ 'grid-item-selected': $route.params.id == value }"
@@ -149,7 +149,7 @@ export default {
       this.$store.commit("user/SET_INFO", {
         status: constants.STATUS_SUBMITTED
       });
-      this.$router.replace("/details");
+      this.$router.replace("/student/details");
     },
     formatTimeNumber(num) {
       return num < 10 ? "0" + num : num;
@@ -160,7 +160,7 @@ export default {
         nextPage >= 1 &&
         nextPage <= constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM
       ) {
-        this.$router.replace("/exam/" + nextPage);
+        this.$router.replace("/student/exam/" + nextPage);
         this.selectedAnswer[0] = this.currentAnswer;
       }
     },

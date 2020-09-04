@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import constants from "@/constants.js";
-import { isMobile } from "@/utils/device";
 import store from "@/store";
 
 Vue.use(VueRouter);
@@ -20,77 +19,45 @@ VueRouter.prototype.replace = function replace(location, onResolve, onReject) {
   return originalReplace.call(this, location).catch(err => err);
 };
 
-async function role() {
-  if (store.state.user.id == -1) {
-    await store.dispatch("user/getInfo");
-  }
-  return store.state.user.role;
-}
-
 export const menuList = [
   {
-    path: "/index",
+    path: "/admin/index",
     name: "index",
-    component: async () =>
-      (await role()) == constants.ROLE_STUDENT
-        ? import("@/views/mobile/pages/Welcome.vue")
-        : import("@/views/pc/pages/Welcome.vue"),
+    component: () => import("@/views/admin/pages/Welcome.vue"),
     meta: {
       title: "主页",
       icon: "el-icon-s-home",
-      role: [constants.ROLE_ADMIN, constants.ROLE_STUDENT]
+      role: [constants.ROLE_ADMIN]
     }
   },
   {
-    path: "/students",
+    path: "/admin/students",
     name: "students",
-    component: () => import("@/views/pc/pages/StudentList.vue"),
+    component: () => import("@/views/admin/pages/StudentList copy.vue"),
     meta: {
       title: "学生列表",
-      role: [constants.ROLE_ADMIN],
-      icon: "el-icon-s-grid"
+      icon: "el-icon-s-grid",
+      role: [constants.ROLE_ADMIN]
     }
   },
   {
-    path: "/choice",
+    path: "/admin/choice",
     name: "choice",
-    component: () => import("@/views/pc/pages/ChoiceQuestionList.vue"),
+    component: () => import("@/views/admin/pages/ChoiceQuestionList.vue"),
     meta: {
       title: "选择题列表",
-      role: [constants.ROLE_ADMIN],
-      icon: "el-icon-s-grid"
+      icon: "el-icon-s-grid",
+      role: [constants.ROLE_ADMIN]
     }
   },
   {
-    path: "/judge",
+    path: "/admin/judge",
     name: "judge",
-    component: () => import("@/views/pc/pages/JudgeQuestionList.vue"),
+    component: () => import("@/views/admin/pages/JudgeQuestionList.vue"),
     meta: {
       title: "判断题列表",
-      role: [constants.ROLE_ADMIN],
-      icon: "el-icon-s-grid"
-    }
-  },
-  {
-    path: "/details",
-    name: "details",
-    component: () => import("@/views/mobile/pages/Details.vue"),
-    meta: {
-      role: [constants.ROLE_STUDENT],
-      status: [constants.STATUS_SUBMITTED]
-    }
-  },
-  {
-    path: "/exam/:id",
-    name: "exam",
-    component: () => import("@/views/mobile/pages/Exam.vue"),
-    meta: {
-      role: [constants.ROLE_STUDENT],
-      status: [
-        constants.STATUS_NOT_START,
-        constants.STATUS_GENERATED,
-        constants.STATUS_STARTED
-      ]
+      icon: "el-icon-s-grid",
+      role: [constants.ROLE_ADMIN]
     }
   }
 ];
@@ -98,7 +65,7 @@ export const menuList = [
 export const routes = [
   {
     path: "/",
-    redirect: "/home"
+    redirect: "/login"
   },
   {
     path: "/login",
@@ -106,14 +73,66 @@ export const routes = [
     component: () => import("@/views/Login.vue")
   },
   {
-    path: "/home",
-    name: "home",
-    component: () =>
-      isMobile()
-        ? import("@/views/mobile/Home.vue")
-        : import("@/views/pc/Home.vue"),
-    redirect: "/index",
-    children: menuList
+    path: "/admin/home",
+    name: "admin-home",
+    redirect: "/admin/index",
+    component: () => import("@/views/admin/Home.vue"),
+    children: menuList,
+    meta: {
+      role: [constants.ROLE_ADMIN]
+    }
+  },
+  {
+    path: "/student/home",
+    name: "student-home",
+    redirect: "student/index",
+    component: () => import("@/views/student/Home.vue"),
+    meta: {
+      role: [constants.ROLE_STUDENT],
+      status: [
+        constants.STATUS_NOT_START,
+        constants.STATUS_GENERATED,
+        constants.STATUS_STARTED,
+        constants.STATUS_SUBMITTED
+      ]
+    },
+    children: [
+      {
+        path: "/student/index",
+        component: () => import("@/views/student/pages/Welcome.vue"),
+        meta: {
+          role: [constants.ROLE_STUDENT],
+          status: [
+            constants.STATUS_NOT_START,
+            constants.STATUS_GENERATED,
+            constants.STATUS_STARTED,
+            constants.STATUS_SUBMITTED
+          ]
+        }
+      },
+      {
+        path: "/student/exam/:id",
+        name: "exam",
+        component: () => import("@/views/student/pages/Exam.vue"),
+        meta: {
+          role: [constants.ROLE_STUDENT],
+          status: [
+            constants.STATUS_NOT_START,
+            constants.STATUS_GENERATED,
+            constants.STATUS_STARTED
+          ]
+        }
+      },
+      {
+        path: "/student/details",
+        name: "details",
+        component: () => import("@/views/student/pages/Details.vue"),
+        meta: {
+          role: [constants.ROLE_STUDENT],
+          status: [constants.STATUS_SUBMITTED]
+        }
+      }
+    ]
   }
 ];
 
@@ -122,10 +141,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name == "login" || to.name == "index") {
-    next();
-    return;
-  }
+  if (to.name == "login") return next();
 
   if (store.state.user.id == -1) {
     await store.dispatch("user/getInfo");
@@ -138,16 +154,18 @@ router.beforeEach(async (to, from, next) => {
     to.meta.role.some(r => r == constants.ROLE_ADMIN) &&
     role == constants.ROLE_ADMIN
   )
-    next();
-
+    return next();
   if (
     to.meta.role.some(r => r == constants.ROLE_STUDENT) &&
     role == constants.ROLE_STUDENT &&
     to.meta.status.some(s => s == status)
   )
-    next();
+    return next();
 
-  next(false);
+  next({
+    name: "login",
+    query: { redirect: to.meta.redirect }
+  });
 });
 
 export default router;
