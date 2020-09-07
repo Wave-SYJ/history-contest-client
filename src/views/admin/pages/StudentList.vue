@@ -2,11 +2,13 @@
   <el-container style="height: 100%;">
     <el-header>
       <el-col :span="12">
-        <el-button type="primary" @click="handleInsert">添加</el-button>
+        <el-button type="primary" :disabled="this.loading" @click="handleInsert"
+          >添加</el-button
+        >
         <el-button
           type="danger"
           @click="deleteSelectedRow()"
-          :disabled="multipleSelection.length == 0"
+          :disabled="this.loading || multipleSelection.length == 0"
           >删除选中项</el-button
         >
       </el-col>
@@ -132,9 +134,11 @@ export default {
       this.getStudentList();
     },
     async getStudentList() {
+      this.loading = true;
       const res = await userApi.getStudentPage(this.currentPage, this.pageSize);
       this.studentList = res.list;
       this.total = res.total;
+      this.loading = false;
     },
     getTagType(status) {
       switch (status) {

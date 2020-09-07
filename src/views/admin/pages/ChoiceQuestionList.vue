@@ -2,9 +2,11 @@
   <el-container style="height: 100%;">
     <el-header>
       <el-col :span="12">
-        <el-button type="primary" @click="handleInsert">添加</el-button>
+        <el-button type="primary" :disabled="this.loading" @click="handleInsert"
+          >添加</el-button
+        >
         <el-button
-          :disabled="multipleSelection.length == 0"
+          :disabled="this.loading || multipleSelection.length == 0"
           type="danger"
           @click="deleteSelectedRow()"
           >删除选中项</el-button
@@ -144,12 +146,14 @@ export default {
       this.getQuestionList();
     },
     async getQuestionList() {
+      this.loading = true;
       const res = await choiceApi.getQuestionPage(
         this.currentPage,
         this.pageSize
       );
       this.questionList = res.list;
       this.total = res.total;
+      this.loading = false;
     },
     handleInsert() {
       this.editData = {};
