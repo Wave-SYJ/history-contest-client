@@ -33,7 +33,7 @@ export const menuList = [
   {
     path: "/admin/students",
     name: "students",
-    component: () => import("@/views/admin/pages/StudentList copy.vue"),
+    component: () => import("@/views/admin/pages/StudentList.vue"),
     meta: {
       title: "学生列表",
       icon: "el-icon-s-grid",

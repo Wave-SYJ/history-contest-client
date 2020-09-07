@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-card class="login-card" shadow="never">
+    <el-card class="login-card" shadow="never" v-loading="loading">
       <div slot="header" style="text-align: center">
         校史校情知识竞赛
       </div>
@@ -44,6 +44,7 @@
 
 <script>
 import constants from "@/constants";
+import removeToken from "@/utils/storage";
 
 export default {
   data() {
@@ -57,23 +58,34 @@ export default {
         sid: [{ required: true, trigger: "blur", message: "用户名不能为空" }],
         password: [{ required: true, trigger: "blur", message: "密码不能为空" }]
         //code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
-      }
+      },
+      loading: false
     };
   },
   methods: {
     async onSubmit() {
       this.$refs.loginForm.validate(async valid => {
         if (!valid) return;
-        await this.$store.dispatch("user/login", this.loginForm);
-        if (this.$store.state.user.id == -1)
-          await this.$store.dispatch("user/getInfo");
-        const push =
-          this.$store.state.user.role === constants.ROLE_STUDENT
-            ? "/student/home"
-            : "/admin/home";
+        this.loading = true;
 
-        this.$router.push({ path: this.redirect || push });
+        try {
+          await this.$store.dispatch("user/login", this.loginForm);
+          if (this.$store.state.user.id == -1)
+            await this.$store.dispatch("user/getInfo");
+          const push =
+            this.$store.state.user.role === constants.ROLE_STUDENT
+              ? "/student/home"
+              : "/admin/home";
+
+          this.$router.push({ path: this.redirect || push });
+        } catch (error) {
+          this.$message.error("账号或密码错误，请重新登录");
+          this.loading = false;
+        }
       });
+    },
+    created() {
+      removeToken();
     }
   }
 };

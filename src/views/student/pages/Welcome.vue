@@ -10,6 +10,7 @@
       v-model="showPopup"
       position="right"
       :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
+      v-loading="!this.$store.state.user.id"
     >
       <van-cell-group title="学生信息">
         <van-cell title="姓名" :value="userInfo.name" />
@@ -24,7 +25,11 @@
       </van-row>
     </van-popup>
 
-    <div class="welcome" v-if="userInfo.status !== constants.STATUS_SUBMITTED">
+    <div
+      class="welcome"
+      v-if="userInfo.status !== constants.STATUS_SUBMITTED"
+      v-loading="loading"
+    >
       <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
       <p>
         本次竞赛共有
@@ -51,7 +56,7 @@
       </div>
     </div>
 
-    <div class="welcome" v-else>
+    <div class="welcome" v-else v-loading="loading">
       <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
       <p>您的得分：</p>
       <p>{{ score }}</p>
@@ -72,7 +77,8 @@ export default {
     return {
       showPopup: false,
       constants,
-      score: 0
+      score: 0,
+      loading: false
     };
   },
   methods: {
@@ -92,9 +98,11 @@ export default {
     }
   },
   async created() {
-    await this.$store.dispatch("user/getInfo");
+    this.loading = true;
+    if (!this.$store.state.user.id) await this.$store.dispatch("user/getInfo");
     if (this.userInfo.status === constants.STATUS_SUBMITTED)
       this.score = await paperApi.getScore();
+    this.loading = false;
   },
   computed: {
     userInfo() {

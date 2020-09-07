@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading.fullscreen.lock="loading">
     <div>
       <van-nav-bar title="东南大学校史校情知识竞赛" @click-right="onClickRight">
         <template #right>
@@ -13,6 +13,7 @@
         v-model="showPopup"
         position="right"
         :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
+        v-loading="!this.$store.state.user.id"
       >
         <van-cell-group title="答题信息">
           <van-grid :column-num="3" :border="true" clickable>
@@ -87,7 +88,11 @@
     </div>
     <div>
       <div class="button-group">
-        <el-button class="submit-button" @click="onSubmit">
+        <el-button
+          class="submit-button"
+          @click="onSubmit"
+          :loading="submitting"
+        >
           交卷
         </el-button>
         <div class="page-button-group">
@@ -128,7 +133,9 @@ export default {
         judgeAnswerSheet: []
       },
       remainTime: 24 * 60 * 60 * 3600 * 1000,
-      selectedAnswer: [-1]
+      selectedAnswer: [-1],
+      loading: true,
+      submitting: false
     };
   },
   methods: {
@@ -142,14 +149,20 @@ export default {
         );
     },
     async onSubmit() {
-      await paperApi.submit(
-        this.paper.choiceAnswerSheet,
-        this.paper.judgeAnswerSheet
-      );
-      this.$store.commit("user/SET_INFO", {
-        status: constants.STATUS_SUBMITTED
-      });
-      this.$router.replace("/student/details");
+      this.submitting = true;
+      try {
+        await paperApi.submit(
+          this.paper.choiceAnswerSheet,
+          this.paper.judgeAnswerSheet
+        );
+        this.$store.commit("user/SET_INFO", {
+          status: constants.STATUS_SUBMITTED
+        });
+        this.$router.replace("/student/details");
+      } catch (error) {
+        this.$message.error("交卷失败，请重试");
+        this.submitting = false;
+      }
     },
     formatTimeNumber(num) {
       return num < 10 ? "0" + num : num;
@@ -161,7 +174,6 @@ export default {
         nextPage <= constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM
       ) {
         this.$router.replace("/student/exam/" + nextPage);
-        this.selectedAnswer[0] = this.currentAnswer;
       }
     },
     onCurrentAnswerChanged(name) {
@@ -190,6 +202,11 @@ export default {
 
       this.remainTime =
         constants.TIME_LIMIT - (new Date().getTime() - this.paper.startTime);
+    }
+  },
+  watch: {
+    $route() {
+      this.selectedAnswer[0] = this.currentAnswer;
     }
   },
   computed: {
@@ -236,8 +253,10 @@ export default {
       return constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM;
     }
   },
-  created() {
-    this.getPaper();
+  async created() {
+    this.loading = true;
+    await this.getPaper();
+    this.loading = false;
   }
 };
 </script>

@@ -17,6 +17,7 @@
       v-model="showPopup"
       position="right"
       :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
+      v-loading="!this.$store.state.user.id"
     >
       <van-cell-group title="学生信息">
         <van-cell title="姓名" :value="userInfo.name" />
@@ -34,8 +35,9 @@
     <van-notice-bar
       :scrollable="false"
       :text="`您的成绩：${completePaper.score} / 100`"
+      v-loading="loading"
     />
-    <div class="details">
+    <div class="details" v-loading="loading">
       <h2 class="details-header">答题详情</h2>
 
       <div
@@ -141,7 +143,8 @@ export default {
     return {
       showPopup: false,
       completePaper: {},
-      constants: canstants
+      constants: canstants,
+      loading: true
     };
   },
   methods: {
@@ -160,7 +163,9 @@ export default {
     }
   },
   async created() {
+    this.loading = true;
     this.completePaper = await paperApi.getCompletePaper();
+    this.loading = false;
   }
 };
 </script>
