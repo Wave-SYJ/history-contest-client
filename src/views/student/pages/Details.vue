@@ -4,6 +4,7 @@
       title="东南大学校史校情知识竞赛"
       @click-right="onClickRight"
       @click-left="$router.back(-1)"
+      :fixed="true"
     >
       <template #left>
         <van-icon name="arrow-left" size="18" color="black" />
@@ -13,7 +14,7 @@
       </template>
     </van-nav-bar>
 
-    <van-popup
+    <!-- <van-popup
       v-model="showPopup"
       position="right"
       :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
@@ -30,8 +31,32 @@
           退出
         </el-button>
       </van-row>
+    </van-popup> -->
+
+    <van-popup
+      v-model="showPopup"
+      position="right"
+      :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
+      v-loading="!this.$store.state.user.id"
+    >
+      <van-cell-group title="答题信息">
+        <van-grid :column-num="3" :border="true" clickable>
+          <van-grid-item
+            v-for="value in totalQuestion"
+            :key="value"
+            :text="value.toString()"
+            @click="gridClicked(value)"
+            :class="{ 'grid-item-selected': $route.params.id == value }"
+          >
+            <template #icon>
+              <div :class="['circle']"></div>
+            </template>
+          </van-grid-item>
+        </van-grid>
+      </van-cell-group>
     </van-popup>
 
+    <div :id="'anchor' + 0" style="height: 46px"></div>
     <van-notice-bar
       :scrollable="false"
       :text="`您的成绩：${completePaper.score} / 100`"
@@ -39,7 +64,6 @@
     />
     <div class="details" v-loading="loading">
       <h2 class="details-header">答题详情</h2>
-
       <div
         :class="[
           'card',
@@ -87,6 +111,7 @@
             </van-radio-group>
             本题答案：{{ String.fromCharCode(item.answer + 65) }}
           </div>
+          <div :id="'anchor' + (index + 1)"></div>
         </div>
       </div>
 
@@ -127,6 +152,9 @@
             </van-radio-group>
             本题答案：{{ item.answer ? "正确" : "错误" }}
           </div>
+          <div
+            :id="'anchor' + (index + constants.CHOICE_QUESTION_NUM + 1)"
+          ></div>
         </div>
       </div>
     </div>
@@ -134,6 +162,7 @@
 </template>
 
 <script>
+import constants from "@/constants";
 import { removeToken } from "@/utils/storage";
 import paperApi from "@/api/paper";
 import canstants from "@/constants";
@@ -148,6 +177,10 @@ export default {
     };
   },
   methods: {
+    gridClicked(index) {
+      document.querySelector("#anchor" + (index - 1)).scrollIntoView(true);
+      this.showPopup = false;
+    },
     onClickRight() {
       this.showPopup = !this.showPopup;
     },
@@ -160,6 +193,9 @@ export default {
   computed: {
     userInfo() {
       return this.$store.state.user;
+    },
+    totalQuestion() {
+      return constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM;
     }
   },
   async created() {
@@ -214,6 +250,18 @@ export default {
   .wrong {
     border: #ff0000 2px solid;
     box-shadow: 0 0.6rem 1rem #ff000048;
+  }
+}
+
+.circle {
+  margin-bottom: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid black;
+  border-radius: 50%;
+
+  &.selected {
+    background-color: #00c3ff;
   }
 }
 </style>
