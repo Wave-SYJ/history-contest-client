@@ -16,6 +16,7 @@
         <van-cell title="姓名" :value="userInfo.name" />
         <van-cell title="学号" :value="userInfo.sid" />
         <van-cell title="一卡通号" :value="userInfo.cardId" />
+        <van-cell title="院系" :value="userInfo.department" />
       </van-cell-group>
 
       <van-row style="padding: 1rem">

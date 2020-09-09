@@ -1,6 +1,7 @@
 import { getToken, setToken } from "@/utils/storage";
 import authApi from "@/api/auth";
 import userApi from "@/api/user";
+import { getDepartmentBySid } from "@/utils/department";
 
 const user = {
   namespaced: true,
@@ -11,7 +12,8 @@ const user = {
     sid: "",
     cardId: "",
     role: "",
-    status: ""
+    status: "",
+    department: ""
   },
 
   mutations: {
@@ -25,6 +27,7 @@ const user = {
       state.cardId = info.cardId || state.cardId;
       state.role = info.role || state.role;
       state.status = info.status || state.status;
+      if (info.department) state.department = getDepartmentBySid(info.sid);
     },
     CLEAR_INFO: state => {
       state.token = getToken();
@@ -34,6 +37,7 @@ const user = {
       state.cardId = "";
       state.role = "";
       state.status = "";
+      state.department = "";
     }
   },
 

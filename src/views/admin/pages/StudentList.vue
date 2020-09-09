@@ -26,6 +26,11 @@
         <el-table-column type="selection" width="30"> </el-table-column>
         <el-table-column prop="sid" label="学号"> </el-table-column>
         <el-table-column prop="cardId" label="一卡通号"> </el-table-column>
+        <el-table-column label="院系">
+          <template slot-scope="scope">
+            {{ getDepartmentById(scope.row.department) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="姓名"> </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
@@ -34,7 +39,11 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="score" label="分数"> </el-table-column>
+        <el-table-column prop="score" label="分数">
+          <template slot-scope="scope">
+            {{ scope.row.score == -1 ? "无" : scope.row.score }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="175">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -93,6 +102,7 @@
 <script>
 import userApi from "@/api/user";
 import constants from "@/constants";
+import { getDepartmentById } from "@/utils/department";
 
 export default {
   data() {
@@ -119,6 +129,7 @@ export default {
     this.getStudentList();
   },
   methods: {
+    getDepartmentById,
     handleSelectionChange(val) {
       this.multipleSelection = val;
       console.log(val);
