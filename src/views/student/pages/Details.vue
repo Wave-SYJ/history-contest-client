@@ -40,17 +40,41 @@
       v-loading="!this.$store.state.user.id"
     >
       <van-cell-group title="答题信息">
-        <van-grid :column-num="3" :border="true" clickable>
+        <van-grid :column-num="3" :border="false" clickable>
           <van-grid-item
             v-for="value in totalQuestion"
             :key="value"
-            :text="value.toString()"
             @click="gridClicked(value)"
-            :class="{ 'grid-item-selected': $route.params.id == value }"
           >
-            <template #icon>
-              <div :class="['circle']"></div>
-            </template>
+            <div>
+              <div
+                :class="[
+                  'grid-item',
+                  {
+                    'grid-item-not-choose': notChoosed(value),
+                    'grid-item-correct': isCorrect(value)
+                  }
+                ]"
+              >
+                {{ value }}
+              </div>
+              <div
+                :class="[
+                  'grid-item-circle',
+                  {
+                    'grid-item-circle-not-choose': notChoosed(value),
+                    'grid-item-circle-correct': isCorrect(value)
+                  }
+                ]"
+              >
+                <van-icon
+                  style="top: 0.1rem;"
+                  size="0.8rem"
+                  :name="isCorrect(value) ? 'success' : 'cross'"
+                  color="white"
+                />
+              </div>
+            </div>
           </van-grid-item>
         </van-grid>
       </van-cell-group>
@@ -118,7 +142,7 @@
       <div
         :class="[
           'card',
-          item.answer === completePaper.choiceAnswerSheet[index]
+          item.answer === completePaper.judgeAnswerSheet[index]
             ? 'correct'
             : 'wrong'
         ]"
@@ -138,13 +162,13 @@
           <div class="question-body">
             <van-radio-group :value="completePaper.judgeAnswerSheet[index]">
               <van-radio
-                :name="0"
+                :name="1"
                 :checked-color="item.answer === 1 ? '#07c160' : 'red'"
               >
                 正确
               </van-radio>
               <van-radio
-                :name="1"
+                :name="0"
                 :checked-color="item.answer === 0 ? '#07c160' : 'red'"
               >
                 错误
@@ -188,6 +212,35 @@ export default {
       removeToken();
       this.$router.push("/login");
       this.$store.commit("user/CLEAR_INFO");
+    },
+    notChoosed(index) {
+      if (!this.completePaper.id) return true;
+      if (index <= constants.CHOICE_QUESTION_NUM) {
+        return this.completePaper.choiceAnswerSheet[index - 1] == -1;
+      } else {
+        return (
+          this.completePaper.judgeAnswerSheet[
+            index - constants.CHOICE_QUESTION_NUM - 1
+          ] == -1
+        );
+      }
+    },
+    isCorrect(index) {
+      if (!this.completePaper.id) return false;
+      if (index <= constants.CHOICE_QUESTION_NUM)
+        return (
+          this.completePaper.choiceAnswerSheet[index - 1] ==
+          this.completePaper.choiceQuestions[index - 1].answer
+        );
+      else
+        return (
+          this.completePaper.judgeAnswerSheet[
+            index - constants.CHOICE_QUESTION_NUM - 1
+          ] ==
+          this.completePaper.judgeQuestions[
+            index - constants.CHOICE_QUESTION_NUM - 1
+          ].answer
+        );
     }
   },
   computed: {
@@ -253,15 +306,36 @@ export default {
   }
 }
 
-.circle {
+.grid-item {
   margin-bottom: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid black;
-  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid #ea5141;
+  color: #ea5141;
+  border-radius: 15%;
+  text-align: center;
+  line-height: 3rem;
+  border: 2px solid #7299e6;
+  color: #7299e6;
 
-  &.selected {
-    background-color: #00c3ff;
+  &.grid-item-not-choose {
+    color: grey;
+    border-color: grey;
+  }
+}
+
+.grid-item-circle {
+  height: 1.2rem;
+  width: 1.2rem;
+  border-radius: 50%;
+  margin: 0 auto;
+  position: relative;
+  top: -1.2rem;
+  background-color: #e65244;
+  text-align: center;
+
+  &.grid-item-circle-correct {
+    background-color: #27ce6e;
   }
 }
 </style>

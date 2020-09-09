@@ -16,18 +16,28 @@
         v-loading="!this.$store.state.user.id"
       >
         <van-cell-group title="答题信息">
-          <van-grid :column-num="3" :border="true" clickable>
+          <van-grid :column-num="3" :border="false" clickable>
             <van-grid-item
               v-for="value in totalQuestion"
               :key="value"
-              :text="value.toString()"
               :to="'/student/exam/' + value"
               :replace="true"
               @click="showPopup = false"
               :class="{ 'grid-item-selected': $route.params.id == value }"
             >
               <template #icon>
-                <div :class="['circle', { selected: isSelected(value) }]"></div>
+                <div>
+                  <div
+                    :class="[
+                      'grid-item',
+                      {
+                        'grid-item-not-choose': notChoosed(value)
+                      }
+                    ]"
+                  >
+                    {{ value }}
+                  </div>
+                </div>
               </template>
             </van-grid-item>
           </van-grid>
@@ -59,28 +69,34 @@
 
         <div class="question-body">
           <van-radio-group
+            v-if="currentType == '选择题'"
             v-model="selectedAnswer[0]"
             @change="onCurrentAnswerChanged"
           >
             <van-radio :name="0">
-              {{
-                currentType == "选择题"
-                  ? "A. " + currentQuestion.choiceA
-                  : "正确"
-              }}
+              {{ "A. " + currentQuestion.choiceA }}
             </van-radio>
             <van-radio :name="1">
-              {{
-                currentType == "选择题"
-                  ? "B. " + currentQuestion.choiceB
-                  : "错误"
-              }}
+              {{ "B. " + currentQuestion.choiceB }}
             </van-radio>
-            <van-radio v-show="currentType == '选择题'" :name="2">
+            <van-radio :name="2">
               {{ "C. " + currentQuestion.choiceC }}
             </van-radio>
-            <van-radio v-show="currentType == '选择题'" :name="3">
+            <van-radio :name="3">
               {{ "D. " + currentQuestion.choiceD }}
+            </van-radio>
+          </van-radio-group>
+
+          <van-radio-group
+            v-else
+            v-model="selectedAnswer[0]"
+            @change="onCurrentAnswerChanged"
+          >
+            <van-radio :name="1">
+              A. 正确
+            </van-radio>
+            <van-radio :name="0">
+              B. 错误
             </van-radio>
           </van-radio-group>
         </div>
@@ -139,13 +155,14 @@ export default {
     };
   },
   methods: {
-    isSelected(id) {
-      if (id <= constants.CHOICE_QUESTION_NUM)
-        return this.paper.choiceAnswerSheet[id - 1] != -1;
+    notChoosed(index) {
+      if (index <= constants.CHOICE_QUESTION_NUM)
+        return this.paper.choiceAnswerSheet[index - 1] == -1;
       else
         return (
-          this.paper.judgeAnswerSheet[id - constants.CHOICE_QUESTION_NUM - 1] !=
-          -1
+          this.paper.judgeAnswerSheet[
+            index - constants.CHOICE_QUESTION_NUM - 1
+          ] == -1
         );
     },
     async onSubmit() {
@@ -272,15 +289,19 @@ export default {
   right: 1rem;
 }
 
-.circle {
+.grid-item {
   margin-bottom: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid black;
-  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid #7299e6;
+  border-radius: 15%;
+  text-align: center;
+  line-height: 3rem;
+  color: #7299e6;
 
-  &.selected {
-    background-color: #00c3ff;
+  &.grid-item-not-choose {
+    color: grey;
+    border-color: grey;
   }
 }
 
@@ -326,9 +347,5 @@ export default {
       min-height: 1.7rem;
     }
   }
-}
-
-.grid-item-selected {
-  border-bottom: lightgreen solid 5px;
 }
 </style>
