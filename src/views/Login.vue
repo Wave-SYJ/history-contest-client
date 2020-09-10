@@ -32,10 +32,16 @@
         </el-form-item>
 
         <!-- 按钮 -->
-        <el-form-item>
-          <el-button type="primary" style="width: 100%;" @click="onSubmit"
-            >登录</el-button
+        <el-form-item style="position: relative; width: 100%">
+          <el-button type="primary" style="width: 45%;" @click="onSubmit">
+            登录
+          </el-button>
+          <el-button
+            style="position: absolute; width: 45%; right: 0"
+            @click="onRegister"
           >
+            注册
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -83,6 +89,9 @@ export default {
           this.loading = false;
         }
       });
+    },
+    onRegister() {
+      this.$router.push("/register");
     },
     created() {
       removeToken();

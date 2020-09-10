@@ -59,6 +59,16 @@ export const menuList = [
       icon: "el-icon-s-grid",
       role: [constants.ROLE_ADMIN]
     }
+  },
+  {
+    path: "/admin/changePassword",
+    name: "changePassword",
+    component: () => import("@/views/admin/pages/ChangePassword.vue"),
+    meta: {
+      title: "修改密码",
+      icon: "el-icon-lock",
+      role: [constants.ROLE_ADMIN]
+    }
   }
 ];
 
@@ -71,6 +81,11 @@ export const routes = [
     path: "/login",
     name: "login",
     component: () => import("@/views/Login.vue")
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("@/views/Register.vue")
   },
   {
     path: "/admin/home",
@@ -141,7 +156,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name == "login") return next();
+  if (to.name == "login" || to.name == "register") return next();
 
   if (store.state.user.id == -1) {
     await store.dispatch("user/getInfo");
