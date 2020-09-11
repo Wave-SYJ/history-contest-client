@@ -84,8 +84,7 @@ export default {
               : "/admin/home";
 
           this.$router.push({ path: this.redirect || push });
-        } catch (error) {
-          this.$message.error("账号或密码错误，请重新登录");
+        } finally {
           this.loading = false;
         }
       });

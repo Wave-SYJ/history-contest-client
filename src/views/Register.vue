@@ -75,11 +75,10 @@ export default {
       try {
         this.loading = true;
         await authApi.register(this.registerForm);
-        this.loading = false;
         this.$message.success("注册成功");
         this.$router.replace("/login");
-      } catch (e) {
-        this.$message.error(e.response.data);
+      } finally {
+        this.loading = false;
       }
     },
     created() {

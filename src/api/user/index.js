@@ -49,5 +49,12 @@ export default {
       method: "put",
       data: student
     });
+  },
+  changePassword(data) {
+    return request({
+      url: "user/password",
+      method: "put",
+      data
+    });
   }
 };

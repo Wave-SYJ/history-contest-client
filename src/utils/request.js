@@ -1,6 +1,7 @@
 import axios from "axios";
 import router from "@/router";
 import { getToken } from "@/utils/storage";
+import Vue from "vue";
 
 axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
 
@@ -30,6 +31,8 @@ service.interceptors.response.use(
       window.location.toString().substr(-5) !== "login"
     )
       router.push("/login");
+    console.log(response);
+    Vue.prototype.$message.error(response.data);
     return Promise.reject(error);
   }
 );
