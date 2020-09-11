@@ -56,5 +56,17 @@ export default {
       method: "put",
       data
     });
+  },
+  queryStudent(pageIndex, pageSize, queryType, queryValue) {
+    return request({
+      url: "user/student/query",
+      method: "post",
+      data: {
+        pageIndex,
+        pageSize,
+        queryType,
+        queryValue
+      }
+    });
   }
 };

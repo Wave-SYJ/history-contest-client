@@ -1,17 +1,75 @@
 <template>
   <el-container style="height: 100%;">
     <el-header>
-      <el-col :span="12">
-        <el-button type="primary" :disabled="this.loading" @click="handleInsert"
-          >添加</el-button
-        >
-        <el-button
-          type="danger"
-          @click="deleteSelectedRow()"
-          :disabled="this.loading || multipleSelection.length == 0"
-          >删除选中项</el-button
-        >
-      </el-col>
+      <el-row :gutter="12">
+        <el-col :span="6">
+          <el-button
+            type="primary"
+            :disabled="this.loading"
+            @click="handleInsert"
+          >
+            添加
+          </el-button>
+          <el-button
+            type="danger"
+            @click="deleteSelectedRow()"
+            :disabled="this.loading || multipleSelection.length == 0"
+          >
+            删除选中项
+          </el-button>
+        </el-col>
+
+        <el-col :span="4" :offset="4">
+          <el-select
+            placeholder="查询类别"
+            v-model="queryForm.type"
+            @change="queryForm.value = ''"
+          >
+            <el-option label="学号" value="sid"></el-option>
+            <el-option label="一卡通号" value="cardId"></el-option>
+            <el-option label="姓名" value="name"></el-option>
+            <el-option label="院系" value="department"></el-option>
+            <el-option label="状态" value="status"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="6">
+          <el-select
+            v-if="queryForm.type == 'status'"
+            v-model="queryForm.value"
+            placeholder="请选择"
+            style="width: 100%"
+          >
+            <el-option label="已提交" :value="constants.STATUS_SUBMITTED">
+            </el-option>
+            <el-option label="未提交" :value="constants.STATUS_NOT_SUBMITTED">
+            </el-option>
+          </el-select>
+          <el-select
+            v-else-if="queryForm.type == 'department'"
+            v-model="queryForm.value"
+            placeholder="请选择"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in constants.DEPARTMENT"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+          <el-input
+            v-else
+            placeholder="值"
+            v-model="queryForm.value"
+            style="width: 100%"
+          ></el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button @click="handleQuery">查询</el-button>
+          <el-button @click="handleClearQuery">清空</el-button>
+        </el-col>
+      </el-row>
     </el-header>
     <el-main style="padding: 0">
       <el-table
@@ -35,7 +93,11 @@
         <el-table-column label="状态">
           <template slot-scope="scope">
             <el-tag :type="getTagType(scope.row.status)" disable-transitions>
-              {{ constants[scope.row.status + "_ZH"] }}
+              {{
+                scope.row.status === constants.STATUS_SUBMITTED
+                  ? "已提交"
+                  : "未提交"
+              }}
             </el-tag>
           </template>
         </el-table-column>
@@ -117,7 +179,12 @@ export default {
 
       pageSize: 50,
       total: 0,
-      currentPage: 1
+      currentPage: 1,
+
+      queryForm: {
+        type: "",
+        value: ""
+      }
     };
   },
   computed: {
@@ -129,6 +196,14 @@ export default {
     this.getStudentList();
   },
   methods: {
+    handleQuery() {
+      this.getStudentList();
+    },
+    handleClearQuery() {
+      this.queryForm.type = "";
+      this.queryForm.value = "";
+      this.getStudentList();
+    },
     getDepartmentById,
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -147,7 +222,12 @@ export default {
     },
     async getStudentList() {
       this.loading = true;
-      const res = await userApi.getStudentPage(this.currentPage, this.pageSize);
+      const res = await userApi.queryStudent(
+        this.currentPage,
+        this.pageSize,
+        this.queryForm.type,
+        this.queryForm.value
+      );
       this.studentList = res.list;
       this.total = res.total;
       this.loading = false;
