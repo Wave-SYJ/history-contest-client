@@ -31,7 +31,7 @@ service.interceptors.response.use(
       window.location.toString().substr(-5) !== "login"
     )
       router.push("/login");
-    console.log(response);
+    if (!response.data) response.data = "操作失败，请重试";
     Vue.prototype.$message.error(response.data);
     return Promise.reject(error);
   }

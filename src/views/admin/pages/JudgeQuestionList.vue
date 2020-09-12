@@ -1,16 +1,46 @@
 <template>
   <el-container style="height: 100%;">
+    <input
+      id="uploadInput"
+      type="file"
+      accept=".xlsx,.xls"
+      v-show="false"
+      @change="upload"
+    />
     <el-header>
       <el-col :span="12">
-        <el-button type="primary" :disabled="this.loading" @click="handleInsert"
-          >添加</el-button
+        <el-button
+          type="primary"
+          :disabled="this.loading"
+          @click="handleInsert"
         >
+          添加
+        </el-button>
         <el-button
           type="danger"
           @click="deleteSelectedRow()"
           :disabled="this.loading || multipleSelection.length == 0"
-          >删除选中项</el-button
         >
+          删除选中项
+        </el-button>
+
+        <el-dropdown
+          style="margin-left: 12px;"
+          @command="handleDropdown"
+          v-loading="dropdownLoading"
+        >
+          <el-button>
+            导入<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="importAndInsert">
+              导入并添加
+            </el-dropdown-item>
+            <el-dropdown-item command="importAndCover">
+              导入并覆盖
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-col>
     </el-header>
     <el-main style="padding: 0">
@@ -24,7 +54,8 @@
       >
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column type="selection" width="30"> </el-table-column>
-        <el-table-column prop="question" label="问题"> </el-table-column>
+        <el-table-column prop="question" label="问题" show-overflow-tooltip>
+        </el-table-column>
         <el-table-column label="答案">
           <template slot-scope="scope">
             {{ scope.row.answer == 0 ? "错误" : "正确" }}
@@ -101,7 +132,10 @@ export default {
 
       pageSize: 50,
       total: 0,
-      currentPage: 1
+      currentPage: 1,
+
+      dropdownLoading: false,
+      uploadType: ""
     };
   },
   computed: {
@@ -113,6 +147,36 @@ export default {
     this.getQuestionList();
   },
   methods: {
+    async upload() {
+      this.dropdownLoading = true;
+      const formData = new window.FormData();
+      formData.append(
+        "file",
+        document.querySelector("input[type=file]").files[0]
+      );
+      try {
+        if (this.uploadType == "insert")
+          await judgeApi.importAndInsert(formData);
+        else await judgeApi.importAndCover(formData);
+      } finally {
+        this.dropdownLoading = false;
+        this.getQuestionList();
+      }
+    },
+    async handleDropdown(command) {
+      try {
+        this.dropdownLoading = true;
+        if (command == "importAndInsert") {
+          this.uploadType = "insert";
+          document.getElementById("uploadInput").click();
+        } else {
+          this.uploadType = "cover";
+          document.getElementById("uploadInput").click();
+        }
+      } finally {
+        this.dropdownLoading = false;
+      }
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

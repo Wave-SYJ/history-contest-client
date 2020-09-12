@@ -1,9 +1,6 @@
 <template>
   <div>
-    <el-row>
-      <el-button @click="goToStudentList">学生信息</el-button>
-      <el-button>试卷信息</el-button>
-    </el-row>
+    <el-row> </el-row>
   </div>
 </template>
 

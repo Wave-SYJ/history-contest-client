@@ -43,5 +43,25 @@ export default {
       method: "delete",
       data: ids
     });
+  },
+  importAndInsert(formData) {
+    return request({
+      url: "choice/import/insert",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
+  importAndCover(formData) {
+    return request({
+      url: "choice/import/cover",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   }
 };

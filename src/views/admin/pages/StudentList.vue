@@ -234,11 +234,14 @@ export default {
         "file",
         document.querySelector("input[type=file]").files[0]
       );
-      if (this.uploadType == "insert")
-        await userApi.importStudentAndInsert(formData);
-      else await userApi.importStudentAndCover(formData);
-      this.dropdownLoading = false;
-      this.getStudentList();
+      try {
+        if (this.uploadType == "insert")
+          await userApi.importStudentAndInsert(formData);
+        else await userApi.importStudentAndCover(formData);
+      } finally {
+        this.dropdownLoading = false;
+        this.getStudentList();
+      }
     },
     async handleDropdown(command) {
       try {

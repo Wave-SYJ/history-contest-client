@@ -44,5 +44,25 @@ export default {
       method: "delete",
       data: ids
     });
+  },
+  importAndInsert(formData) {
+    return request({
+      url: "judge/import/insert",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
+  importAndCover(formData) {
+    return request({
+      url: "judge/import/cover",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   }
 };
