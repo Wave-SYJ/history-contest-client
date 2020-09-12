@@ -2,7 +2,7 @@
   <el-container style="height: 100%;">
     <el-header>
       <el-row :gutter="12">
-        <el-col :span="6">
+        <el-col :span="10">
           <el-button
             type="primary"
             :disabled="this.loading"
@@ -17,9 +17,30 @@
           >
             删除选中项
           </el-button>
+
+          <el-dropdown
+            style="margin-left: 12px;"
+            @command="handleDropdown"
+            v-loading="dropdownLoading"
+          >
+            <el-button>
+              导入&导出<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="export">
+                导入并添加
+              </el-dropdown-item>
+              <el-dropdown-item command="export">
+                导入并覆盖
+              </el-dropdown-item>
+              <el-dropdown-item command="export">
+                导出
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-col>
 
-        <el-col :span="4" :offset="4">
+        <el-col :span="4">
           <el-select
             placeholder="查询类别"
             v-model="queryForm.type"
@@ -135,7 +156,7 @@
       </el-pagination>
     </el-footer>
 
-    <el-dialog title="编辑" :visible.sync="dialogVisible">
+    <el-dialog title="添加/编辑" :visible.sync="dialogVisible">
       <el-form :model="editData">
         <el-form-item label="学号">
           <el-input v-model="editData.sid" autocomplete="off"></el-input>
@@ -184,7 +205,9 @@ export default {
       queryForm: {
         type: "",
         value: ""
-      }
+      },
+
+      dropdownLoading: false
     };
   },
   computed: {
@@ -196,6 +219,25 @@ export default {
     this.getStudentList();
   },
   methods: {
+    async handleDropdown(command) {
+      try {
+        if (command == "export") {
+          this.dropdownLoading = true;
+          const data = await userApi.exportStudentList();
+          if (!data) this.$message.error("导出失败。");
+
+          let url = window.URL.createObjectURL(data);
+          let link = document.createElement("a");
+          link.style.display = "none";
+          link.href = url;
+          link.setAttribute("download", "data.xlsx");
+          document.body.appendChild(link);
+          link.click();
+        }
+      } finally {
+        this.dropdownLoading = false;
+      }
+    },
     handleQuery() {
       this.getStudentList();
     },
@@ -236,9 +278,8 @@ export default {
       switch (status) {
         case constants.STATUS_NOT_START:
         case constants.STATUS_GENERATED:
-          return "info";
         case constants.STATUS_STARTED:
-          return "primary";
+          return "info";
         case constants.STATUS_SUBMITTED:
           return "success";
       }

@@ -58,7 +58,7 @@
       </el-pagination>
     </el-footer>
 
-    <el-dialog title="编辑" :visible.sync="dialogVisible">
+    <el-dialog title="添加/编辑" :visible.sync="dialogVisible">
       <el-form :model="editData">
         <el-form-item label="问题">
           <el-input v-model="editData.question" autocomplete="off"></el-input>
