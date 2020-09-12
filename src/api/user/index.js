@@ -81,5 +81,25 @@ export default {
     return request.get("user/student/export", {
       responseType: "blob"
     });
+  },
+  importStudentAndInsert(formData) {
+    return request({
+      url: "user/student/import/insert",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
+  importStudentAndCover(formData) {
+    return request({
+      url: "user/student/import/cover",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   }
 };

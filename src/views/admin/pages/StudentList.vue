@@ -1,5 +1,12 @@
 <template>
   <el-container style="height: 100%;">
+    <input
+      id="uploadInput"
+      type="file"
+      accept=".xlsx,.xls"
+      v-show="false"
+      @change="upload"
+    />
     <el-header>
       <el-row :gutter="12">
         <el-col :span="10">
@@ -27,10 +34,10 @@
               导入&导出<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="export">
+              <el-dropdown-item command="importAndInsert">
                 导入并添加
               </el-dropdown-item>
-              <el-dropdown-item command="export">
+              <el-dropdown-item command="importAndCover">
                 导入并覆盖
               </el-dropdown-item>
               <el-dropdown-item command="export">
@@ -207,7 +214,8 @@ export default {
         value: ""
       },
 
-      dropdownLoading: false
+      dropdownLoading: false,
+      uploadType: ""
     };
   },
   computed: {
@@ -219,12 +227,25 @@ export default {
     this.getStudentList();
   },
   methods: {
+    async upload() {
+      this.dropdownLoading = true;
+      const formData = new window.FormData();
+      formData.append(
+        "file",
+        document.querySelector("input[type=file]").files[0]
+      );
+      if (this.uploadType == "insert")
+        await userApi.importStudentAndInsert(formData);
+      else await userApi.importStudentAndCover(formData);
+      this.dropdownLoading = false;
+      this.getStudentList();
+    },
     async handleDropdown(command) {
       try {
+        this.dropdownLoading = true;
         if (command == "export") {
-          this.dropdownLoading = true;
           const data = await userApi.exportStudentList();
-          if (!data) this.$message.error("导出失败。");
+          if (!data) this.$message.error("导出失败");
 
           let url = window.URL.createObjectURL(data);
           let link = document.createElement("a");
@@ -233,6 +254,12 @@ export default {
           link.setAttribute("download", "data.xlsx");
           document.body.appendChild(link);
           link.click();
+        } else if (command == "importAndInsert") {
+          this.uploadType = "insert";
+          document.getElementById("uploadInput").click();
+        } else {
+          this.uploadType = "cover";
+          document.getElementById("uploadInput").click();
         }
       } finally {
         this.dropdownLoading = false;
