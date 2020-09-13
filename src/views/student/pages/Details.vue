@@ -129,7 +129,7 @@
                 :name="2"
                 :checked-color="item.answer === 2 ? '#07c160' : 'red'"
               >
-                {{ "C. " + +item.choiceC }}
+                {{ "C. " + item.choiceC }}
               </van-radio>
               <van-radio
                 :name="3"
