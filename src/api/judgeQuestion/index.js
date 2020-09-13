@@ -64,5 +64,11 @@ export default {
         "Content-Type": "multipart/form-data"
       }
     });
+  },
+  getCount() {
+    return request({
+      url: "judge/count",
+      method: "get"
+    });
   }
 };

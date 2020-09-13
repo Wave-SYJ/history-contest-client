@@ -101,5 +101,11 @@ export default {
         "Content-Type": "multipart/form-data"
       }
     });
+  },
+  getCount() {
+    return request({
+      url: "user/student/count",
+      method: "get"
+    });
   }
 };

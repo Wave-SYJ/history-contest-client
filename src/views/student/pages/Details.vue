@@ -3,7 +3,7 @@
     <van-nav-bar
       title="东南大学校史校情知识竞赛"
       @click-right="onClickRight"
-      @click-left="$router.back(-1)"
+      @click-left="$router.replace('/student/index')"
       :fixed="true"
     >
       <template #left>
@@ -39,6 +39,11 @@
       :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
       v-loading="!this.$store.state.user.id"
     >
+      <van-row style="padding: 1rem">
+        <el-button style="width: 100%" type="danger" @click="onLogout">
+          退出
+        </el-button>
+      </van-row>
       <van-cell-group title="答题信息">
         <van-grid :column-num="3" :border="false" clickable>
           <van-grid-item

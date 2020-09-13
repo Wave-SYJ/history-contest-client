@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-card class="login-card" shadow="never" v-loading="loading">
       <div slot="header" style="text-align: center">
-        校史校情知识竞赛
+        东南大学校史校情知识竞赛
       </div>
 
       <el-form
