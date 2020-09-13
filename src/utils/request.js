@@ -29,9 +29,10 @@ service.interceptors.response.use(
     if (
       response.status === 401 &&
       window.location.toString().substr(-5) !== "login"
-    )
+    ) {
       router.push("/login");
-    if (!response.data) response.data = "操作失败，请重试";
+      response.data = "登录信息失效，请重新登录";
+    } else if (!response.data) response.data = "操作失败，请重试";
     Vue.prototype.$message.error(response.data);
     return Promise.reject(error);
   }
