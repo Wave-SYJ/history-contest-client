@@ -5,7 +5,13 @@
 </template>
 
 <script>
+import departmentApi from "@/api/department";
+import constants from "@/constants";
+
 export default {
-  name: "App"
+  name: "App",
+  async created() {
+    constants.DEPARTMENT = await departmentApi.get();
+  }
 };
 </script>
