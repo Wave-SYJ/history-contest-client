@@ -54,9 +54,9 @@ export default {
   data() {
     return {
       registerForm: {
-        sid: "JS219107",
-        cardId: "213192947",
-        name: "孙雨佳",
+        sid: "",
+        cardId: "",
+        name: "",
         code: "CODE"
       },
       registerRules: {

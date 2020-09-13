@@ -56,8 +56,8 @@ export default {
   data() {
     return {
       loginForm: {
-        sid: "JS219107",
-        password: "213192947",
+        sid: "",
+        password: "",
         code: "CODE"
       },
       loginRules: {
