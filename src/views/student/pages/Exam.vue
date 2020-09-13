@@ -46,7 +46,7 @@
 
       <van-cell :title="`#${$route.params.id} ${currentType}（${score}分）`">
         <template #default>
-          <van-count-down :time="remainTime">
+          <van-count-down :time="remainTime" @finish="onSubmit">
             <template #default="timeData">
               <span class="block">{{ formatTimeNumber(timeData.hours) }}</span>
               <span class="colon">:</span>
