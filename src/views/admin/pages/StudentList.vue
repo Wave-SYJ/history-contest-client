@@ -50,6 +50,7 @@
         <el-col :span="4">
           <el-select
             placeholder="查询类别"
+            :disabled="this.loading"
             v-model="queryForm.type"
             @change="queryForm.value = ''"
           >
@@ -94,8 +95,12 @@
           ></el-input>
         </el-col>
         <el-col :span="4">
-          <el-button @click="handleQuery">查询</el-button>
-          <el-button @click="handleClearQuery">清空</el-button>
+          <el-button @click="handleQuery" :disabled="this.loading">
+            查询
+          </el-button>
+          <el-button @click="handleClearQuery" :disabled="this.loading">
+            清空
+          </el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -229,6 +234,7 @@ export default {
   methods: {
     async upload() {
       this.dropdownLoading = true;
+      this.loading = true;
       const formData = new window.FormData();
       formData.append(
         "file",

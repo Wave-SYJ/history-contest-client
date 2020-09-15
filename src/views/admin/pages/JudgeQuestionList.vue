@@ -149,6 +149,7 @@ export default {
   methods: {
     async upload() {
       this.dropdownLoading = true;
+      this.loading = true;
       const formData = new window.FormData();
       formData.append(
         "file",
