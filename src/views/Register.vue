@@ -3,6 +3,13 @@
     <el-card class="register-card" shadow="never" v-loading="loading">
       <div slot="header" style="text-align: center">
         注册
+        <el-button
+          style="float: left; padding: 3px 0; color: black;"
+          type="text"
+          icon="el-icon-arrow-left"
+          @click="$router.replace('login')"
+        >
+        </el-button>
       </div>
 
       <el-form

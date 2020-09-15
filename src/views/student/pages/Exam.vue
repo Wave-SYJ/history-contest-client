@@ -109,7 +109,7 @@
           @click="onSubmit"
           :loading="submitting"
         >
-          交卷
+          提交
         </el-button>
         <div class="page-button-group">
           <el-button
@@ -166,6 +166,18 @@ export default {
         );
     },
     async onSubmit() {
+      await this.$confirm("此操作将提交答卷, 是否继续？", "提示", {
+        type: "warning"
+      });
+
+      await this.$confirm("再次确认：提交答卷后无法更改，是否继续？", "提示", {
+        type: "warning"
+      });
+
+      await this.$confirm("最终确认：是否确定提交？", "提示", {
+        type: "warning"
+      });
+
       this.submitting = true;
       try {
         await paperApi.submit(
@@ -177,7 +189,7 @@ export default {
         });
         this.$router.replace("/student/details");
       } catch (error) {
-        this.$message.error("交卷失败，请重试");
+        this.$message.error("提交失败，请重试");
         this.submitting = false;
       }
     },
