@@ -50,7 +50,7 @@
 
 <script>
 import constants from "@/constants";
-import removeToken from "@/utils/storage";
+import { removeToken } from "@/utils/storage";
 
 export default {
   data() {
@@ -91,10 +91,11 @@ export default {
     },
     onRegister() {
       this.$router.push("/register");
-    },
-    created() {
-      removeToken();
     }
+  },
+  created() {
+    this.$store.commit("user/CLEAR_INFO");
+    removeToken();
   }
 };
 </script>
