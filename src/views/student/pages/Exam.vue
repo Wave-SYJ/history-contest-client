@@ -46,7 +46,7 @@
 
       <van-cell :title="`#${$route.params.id} ${currentType}（${score}分）`">
         <template #default>
-          <van-count-down :time="remainTime" @finish="onSubmit">
+          <van-count-down :time="remainTime" @finish="submit">
             <template #default="timeData">
               <span class="block">{{ formatTimeNumber(timeData.hours) }}</span>
               <span class="colon">:</span>
@@ -179,6 +179,9 @@ export default {
       });
 
       this.submitting = true;
+      this.submit();
+    },
+    async submit() {
       try {
         await paperApi.submit(
           this.paper.choiceAnswerSheet,
@@ -221,6 +224,7 @@ export default {
         status: constants.STATUS_GENERATED
       });
 
+      this.loading = false;
       if (this.userInfo.status === constants.STATUS_GENERATED) {
         this.paper.startTime = new Date();
         await paperApi.calibrateTime(this.paper.startTime);
@@ -285,7 +289,6 @@ export default {
   async created() {
     this.loading = true;
     await this.getPaper();
-    this.loading = false;
   }
 };
 </script>
