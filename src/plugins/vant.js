@@ -14,7 +14,8 @@ import {
   Radio,
   RadioGroup,
   NoticeBar,
-  Loading
+  Loading,
+  Dialog
 } from "vant";
 
 Vue.use(Col);
@@ -31,4 +32,5 @@ Vue.use(CountDown);
 Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(NoticeBar);
+Vue.use(Dialog);
 Vue.use(Loading);

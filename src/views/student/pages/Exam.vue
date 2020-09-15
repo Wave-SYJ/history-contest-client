@@ -138,6 +138,7 @@
 <script>
 import constants from "@/constants";
 import paperApi from "@/api/paper";
+import { Dialog } from "vant";
 
 export default {
   data() {
@@ -166,16 +167,19 @@ export default {
         );
     },
     async onSubmit() {
-      await this.$confirm("此操作将提交答卷, 是否继续？", "提示", {
-        type: "warning"
+      await Dialog.confirm({
+        title: "提示",
+        message: "此操作将提交答卷, 是否继续？"
       });
 
-      await this.$confirm("再次确认：提交答卷后无法更改，是否继续？", "提示", {
-        type: "warning"
+      await Dialog.confirm({
+        title: "提示",
+        message: "再次确认：提交答卷后无法更改，是否继续？"
       });
 
-      await this.$confirm("最终确认：是否确定提交？", "提示", {
-        type: "warning"
+      await Dialog.confirm({
+        title: "提示",
+        message: "最终确认：是否确定提交？"
       });
 
       this.submitting = true;
