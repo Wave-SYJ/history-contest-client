@@ -107,5 +107,11 @@ export default {
       url: "user/student/count",
       method: "get"
     });
+  },
+  deleteAll() {
+    return request({
+      url: "user/student/all",
+      method: "delete"
+    });
   }
 };

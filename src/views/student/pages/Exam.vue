@@ -72,6 +72,7 @@
             v-if="currentType == '选择题'"
             v-model="selectedAnswer[0]"
             @change="onCurrentAnswerChanged"
+            :disabled="submitting"
           >
             <van-radio :name="0">
               {{ "A. " + currentQuestion.choiceA }}
@@ -91,6 +92,7 @@
             v-else
             v-model="selectedAnswer[0]"
             @change="onCurrentAnswerChanged"
+            :disabled="submitting"
           >
             <van-radio :name="1">
               A. 正确

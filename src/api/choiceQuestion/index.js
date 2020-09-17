@@ -69,5 +69,11 @@ export default {
       url: "choice/count",
       method: "get"
     });
+  },
+  deleteAll() {
+    return request({
+      url: "choice/all",
+      method: "delete"
+    });
   }
 };

@@ -70,5 +70,11 @@ export default {
       url: "judge/count",
       method: "get"
     });
+  },
+  deleteAll() {
+    return request({
+      url: "judge/all",
+      method: "delete"
+    });
   }
 };

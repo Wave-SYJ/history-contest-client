@@ -16,13 +16,26 @@
         >
           添加
         </el-button>
-        <el-button
-          type="danger"
-          @click="deleteSelectedRow()"
-          :disabled="this.loading || multipleSelection.length == 0"
+
+        <el-dropdown
+          @command="handleDeleteCmd"
+          style="margin-left: 12px;"
+          trigger="click"
         >
-          删除选中项
-        </el-button>
+          <el-button type="danger">
+            批量删除<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              :disabled="this.loading || multipleSelection.length == 0"
+              command="selected"
+              >删除选中项</el-dropdown-item
+            >
+            <el-dropdown-item command="all" :disabled="this.loading"
+              >删除全部</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </el-dropdown>
 
         <el-dropdown
           style="margin-left: 12px;"
@@ -147,6 +160,10 @@ export default {
     this.getQuestionList();
   },
   methods: {
+    handleDeleteCmd(command) {
+      if (command == "selected") this.deleteSelectedRow();
+      else this.deleteAll();
+    },
     async upload() {
       this.dropdownLoading = true;
       this.loading = true;
@@ -190,6 +207,15 @@ export default {
       await judgeApi.deleteQuestions(
         this.multipleSelection.map(value => value.id)
       );
+      this.getQuestionList();
+    },
+    async deleteAll() {
+      await this.$confirm("此操作将永久删除所有记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
+      await judgeApi.deleteAll();
       this.getQuestionList();
     },
     async getQuestionList() {
