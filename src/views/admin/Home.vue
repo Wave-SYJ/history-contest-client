@@ -63,7 +63,6 @@ export default {
     },
     userRole() {
       if (this.userInfo.status == constants.STATUS_ALL) return "管理员";
-      console.log(constants);
       return getDepartmentById(this.userInfo.department) + "管理员";
     },
     menuList() {

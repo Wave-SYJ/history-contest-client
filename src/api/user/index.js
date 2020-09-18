@@ -70,14 +70,6 @@ export default {
     });
   },
   exportStudentList() {
-    // console.log(request);
-    // return request({
-    //   url: "user/student/export",
-    //   method: "get",
-    //   config: {
-    //     responseType: "blob"
-    //   }
-    // });
     return request.get("user/student/export", {
       responseType: "blob"
     });

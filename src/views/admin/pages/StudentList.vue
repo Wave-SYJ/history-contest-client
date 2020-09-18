@@ -17,13 +17,6 @@
           >
             添加
           </el-button>
-          <!-- <el-button
-            type="danger"
-            @click="deleteSelectedRow()"
-            :disabled="this.loading || multipleSelection.length == 0"
-          >
-            删除选中项
-          </el-button> -->
 
           <el-dropdown
             @command="handleDeleteCmd"
