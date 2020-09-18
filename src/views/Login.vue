@@ -104,6 +104,10 @@ export default {
 .login-container {
   background: #2b4b6b;
   height: 100%;
+  background-image: url("../assets/image/login-background.jpg");
+  background-size: cover;
+  background-position-x: 20%;
+  background-position-y: 10%;
 }
 
 .login-card {
@@ -113,5 +117,6 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.98);
 }
 </style>

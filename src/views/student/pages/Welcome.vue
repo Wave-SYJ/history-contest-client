@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <van-nav-bar title="东南大学校史校情知识竞赛" @click-right="onClickRight">
       <template #right>
         <van-icon name="user-o" size="18" color="black" />
@@ -31,39 +31,43 @@
       v-if="userInfo.status !== constants.STATUS_SUBMITTED"
       v-loading="loading"
     >
-      <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
-      <p>
-        本次竞赛共有
-        {{ constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM }}
-        小题，包含：
-      </p>
-      <ul>
-        <li>
-          选择题 {{ constants.CHOICE_QUESTION_NUM }} 题，每题
-          {{ constants.CHOICE_QUESTION_SCORE }} 分。
-        </li>
-        <li>
-          判断题 {{ constants.JUDGE_QUESTION_NUM }} 题，每题
-          {{ constants.JUDGE_QUESTION_SCORE }} 分。
-        </li>
-      </ul>
-      <p>时间限制为 {{ constants.TIME_LIMIT / 60 / 1000 }} 分钟。</p>
-      <p>答题过程中请不要中途退出。</p>
+      <div class="card">
+        <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
+        <p>
+          本次竞赛共有
+          {{ constants.CHOICE_QUESTION_NUM + constants.JUDGE_QUESTION_NUM }}
+          小题，包含：
+        </p>
+        <ul>
+          <li>
+            选择题 {{ constants.CHOICE_QUESTION_NUM }} 题，每题
+            {{ constants.CHOICE_QUESTION_SCORE }} 分。
+          </li>
+          <li>
+            判断题 {{ constants.JUDGE_QUESTION_NUM }} 题，每题
+            {{ constants.JUDGE_QUESTION_SCORE }} 分。
+          </li>
+        </ul>
+        <p>时间限制为 {{ constants.TIME_LIMIT / 60 / 1000 }} 分钟。</p>
+        <p style="color: red">答题过程中请不要中途退出。</p>
 
-      <div>
-        <van-button type="info" @click="onStartExam">
-          开始答题
-        </van-button>
+        <div>
+          <el-button type="primary" @click="onStartExam">
+            开始答题
+          </el-button>
+        </div>
       </div>
     </div>
 
     <div class="welcome" v-else v-loading="loading">
-      <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
-      <p>您的得分：</p>
-      <p>{{ score }}</p>
-      <van-button type="info" @click="onGetDetails">
-        查看详情
-      </van-button>
+      <div class="card">
+        <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
+        <p>您的得分：</p>
+        <p>{{ score }}</p>
+        <el-button type="info" @click="onGetDetails">
+          查看详情
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -114,12 +118,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.welcome {
-  width: 70%;
-  left: 15%;
-  right: 15%;
-  position: absolute;
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
+.welcome {
   text-align: center;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card {
+  margin: 0 auto;
+  width: 70%;
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 12px #ebedf0;
 }
 </style>

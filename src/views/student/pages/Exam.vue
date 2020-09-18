@@ -350,11 +350,11 @@ export default {
   padding: 1rem;
   margin: 0;
   box-sizing: border-box;
-  text-align: center;
 
   .question-head {
     font-weight: 700;
     font-size: 1rem;
+    text-align: center;
     font-family: Avenir, Helvetica, Arial, sans-serif;
   }
 
