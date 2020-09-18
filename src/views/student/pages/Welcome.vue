@@ -63,7 +63,7 @@
       <div class="card">
         <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
         <p>您的得分：</p>
-        <p>{{ score }}</p>
+        <p style="font-size: 4rem">{{ score }}</p>
         <el-button type="primary" @click="onGetDetails">
           查看详情
         </el-button>
@@ -123,6 +123,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
+  background-color: rgb(249, 249, 249);
 }
 
 .welcome {

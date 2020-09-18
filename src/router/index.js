@@ -31,8 +31,6 @@ const Exam = resolve => require(["@/views/student/pages/Exam.vue"], resolve);
 const Details = resolve =>
   require(["@/views/student/pages/Details.vue"], resolve);
 
-const AdminIndex = resolve =>
-  require(["@/views/admin/pages/Welcome.vue"], resolve);
 const StudentList = resolve =>
   require(["@/views/admin/pages/StudentList.vue"], resolve);
 const AdminList = resolve =>
@@ -45,17 +43,6 @@ const ChangePassword = resolve =>
   require(["@/views/admin/pages/ChangePassword.vue"], resolve);
 
 export const menuList = [
-  {
-    path: "/admin/index",
-    name: "index",
-    component: AdminIndex,
-    meta: {
-      title: "主页",
-      icon: "el-icon-s-home",
-      role: [constants.ROLE_ADMIN],
-      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
-    }
-  },
   {
     path: "/admin/students",
     name: "students",

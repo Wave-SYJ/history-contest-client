@@ -1,111 +1,114 @@
 <template>
-  <div v-loading.fullscreen.lock="loading">
-    <div>
-      <van-nav-bar title="东南大学校史校情知识竞赛" @click-right="onClickRight">
-        <template #right>
-          <div style="font-size: 18px">
-            <i class="el-icon-s-fold"></i>
-          </div>
-        </template>
-      </van-nav-bar>
+  <div v-loading.fullscreen.lock="loading" class="container">
+    <van-nav-bar title="东南大学校史校情知识竞赛" @click-right="onClickRight">
+      <template #right>
+        <div style="font-size: 18px">
+          <i class="el-icon-s-fold"></i>
+        </div>
+      </template>
+    </van-nav-bar>
 
-      <van-popup
-        v-model="showPopup"
-        position="right"
-        :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
-        v-loading="!this.$store.state.user.id"
-      >
-        <van-cell-group title="答题信息">
-          <van-grid :column-num="3" :border="false" clickable>
-            <van-grid-item
-              v-for="value in totalQuestion"
-              :key="value"
-              :to="'/student/exam/' + value"
-              :replace="true"
-              @click="showPopup = false"
-              :class="{ 'grid-item-selected': $route.params.id == value }"
-            >
-              <template #icon>
-                <div>
-                  <div
-                    :class="[
-                      'grid-item',
-                      {
-                        'grid-item-not-choose': notChoosed(value)
-                      }
-                    ]"
-                  >
-                    {{ value }}
-                  </div>
+    <van-popup
+      v-model="showPopup"
+      position="right"
+      :style="{ height: '100%', width: '70%', maxWidth: '300px' }"
+      v-loading="!this.$store.state.user.id"
+    >
+      <van-cell-group title="答题信息">
+        <van-grid :column-num="3" :border="false" clickable>
+          <van-grid-item
+            v-for="value in totalQuestion"
+            :key="value"
+            :to="'/student/exam/' + value"
+            :replace="true"
+            @click="showPopup = false"
+            :class="{ 'grid-item-selected': $route.params.id == value }"
+          >
+            <template #icon>
+              <div>
+                <div
+                  :class="[
+                    'grid-item',
+                    {
+                      'grid-item-not-choose': notChoosed(value)
+                    }
+                  ]"
+                >
+                  {{ value }}
                 </div>
-              </template>
-            </van-grid-item>
-          </van-grid>
-        </van-cell-group>
-      </van-popup>
-
-      <van-cell :title="`#${$route.params.id} ${currentType}（${score}分）`">
-        <template #default>
-          <van-count-down :time="remainTime" @finish="submit">
-            <template #default="timeData">
-              <span class="block">{{ formatTimeNumber(timeData.hours) }}</span>
-              <span class="colon">:</span>
-              <span class="block">{{
-                formatTimeNumber(timeData.minutes)
-              }}</span>
-              <span class="colon">:</span>
-              <span class="block">{{
-                formatTimeNumber(timeData.seconds)
-              }}</span>
+              </div>
             </template>
-          </van-count-down>
-        </template>
-      </van-cell>
+          </van-grid-item>
+        </van-grid>
+      </van-cell-group>
+    </van-popup>
 
-      <div class="question">
-        <h3 class="question-head">
-          {{ currentQuestion.question }}
-        </h3>
+    <div class="context">
+      <div class="card">
+        <van-cell :title="`#${$route.params.id} ${currentType}（${score}分）`">
+          <template #default>
+            <van-count-down :time="remainTime" @finish="submit">
+              <template #default="timeData">
+                <span class="block">{{
+                  formatTimeNumber(timeData.hours)
+                }}</span>
+                <span class="colon">:</span>
+                <span class="block">{{
+                  formatTimeNumber(timeData.minutes)
+                }}</span>
+                <span class="colon">:</span>
+                <span class="block">{{
+                  formatTimeNumber(timeData.seconds)
+                }}</span>
+              </template>
+            </van-count-down>
+          </template>
+        </van-cell>
 
-        <div class="question-body">
-          <van-radio-group
-            v-if="currentType == '选择题'"
-            v-model="selectedAnswer[0]"
-            @change="onCurrentAnswerChanged"
-            :disabled="submitting"
-          >
-            <van-radio :name="0">
-              {{ "A. " + currentQuestion.choiceA }}
-            </van-radio>
-            <van-radio :name="1">
-              {{ "B. " + currentQuestion.choiceB }}
-            </van-radio>
-            <van-radio :name="2">
-              {{ "C. " + currentQuestion.choiceC }}
-            </van-radio>
-            <van-radio :name="3">
-              {{ "D. " + currentQuestion.choiceD }}
-            </van-radio>
-          </van-radio-group>
+        <div class="question">
+          <h3 class="question-head">
+            {{ currentQuestion.question }}
+          </h3>
 
-          <van-radio-group
-            v-else
-            v-model="selectedAnswer[0]"
-            @change="onCurrentAnswerChanged"
-            :disabled="submitting"
-          >
-            <van-radio :name="1">
-              A. 正确
-            </van-radio>
-            <van-radio :name="0">
-              B. 错误
-            </van-radio>
-          </van-radio-group>
+          <div class="question-body">
+            <van-radio-group
+              v-if="currentType == '选择题'"
+              v-model="selectedAnswer[0]"
+              @change="onCurrentAnswerChanged"
+              :disabled="submitting"
+            >
+              <van-radio :name="0">
+                {{ "A. " + currentQuestion.choiceA }}
+              </van-radio>
+              <van-radio :name="1">
+                {{ "B. " + currentQuestion.choiceB }}
+              </van-radio>
+              <van-radio :name="2">
+                {{ "C. " + currentQuestion.choiceC }}
+              </van-radio>
+              <van-radio :name="3">
+                {{ "D. " + currentQuestion.choiceD }}
+              </van-radio>
+            </van-radio-group>
+
+            <van-radio-group
+              v-else
+              v-model="selectedAnswer[0]"
+              @change="onCurrentAnswerChanged"
+              :disabled="submitting"
+            >
+              <van-radio :name="1">
+                A. 正确
+              </van-radio>
+              <van-radio :name="0">
+                B. 错误
+              </van-radio>
+            </van-radio-group>
+          </div>
         </div>
       </div>
-    </div>
-    <div>
-      <div class="button-group">
+
+      <div class="button-group" style="margin-top: 1.5rem; height: 40px">
         <el-button
           class="submit-button"
           @click="onSubmit"
@@ -368,5 +371,32 @@ export default {
       min-height: 1.7rem;
     }
   }
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(249, 249, 249);
+}
+
+.context {
+  text-align: center;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card {
+  margin: 0 auto;
+  width: 70%;
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 12px #ebedf0;
 }
 </style>
