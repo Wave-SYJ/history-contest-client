@@ -99,6 +99,10 @@ export default {
 .register-container {
   background: #2b4b6b;
   height: 100%;
+  background-image: url("../assets/image/login-background.jpg");
+  background-size: cover;
+  background-position-x: 20%;
+  background-position-y: 10%;
 }
 
 .register-card {
