@@ -64,7 +64,7 @@
         <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
         <p>您的得分：</p>
         <p>{{ score }}</p>
-        <el-button type="info" @click="onGetDetails">
+        <el-button type="primary" @click="onGetDetails">
           查看详情
         </el-button>
       </div>

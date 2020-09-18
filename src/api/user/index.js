@@ -113,5 +113,59 @@ export default {
       url: "user/student/all",
       method: "delete"
     });
+  },
+  deleteAdmin(id) {
+    return request({
+      url: "user/admin/" + id,
+      method: "delete"
+    });
+  },
+  deleteAdmins(ids) {
+    return request({
+      url: "user/admins",
+      method: "delete",
+      data: ids
+    });
+  },
+  getAdminList() {
+    return request({
+      url: "/user/admin/list",
+      method: "get"
+    });
+  },
+  insertAdmin(data) {
+    console.log(data);
+    return request({
+      url: "/user/admin/insert",
+      method: "put",
+      data
+    });
+  },
+  editAdmin(data) {
+    return request({
+      url: "/user/admin",
+      method: "put",
+      data
+    });
+  },
+  importAdminAndInsert(formData) {
+    return request({
+      url: "user/admin/import/insert",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
+  importAdminAndCover(formData) {
+    return request({
+      url: "user/admin/import/cover",
+      data: formData,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   }
 };

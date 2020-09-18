@@ -35,6 +35,8 @@ const AdminIndex = resolve =>
   require(["@/views/admin/pages/Welcome.vue"], resolve);
 const StudentList = resolve =>
   require(["@/views/admin/pages/StudentList.vue"], resolve);
+const AdminList = resolve =>
+  require(["@/views/admin/pages/AdminList.vue"], resolve);
 const ChoiceList = resolve =>
   require(["@/views/admin/pages/ChoiceQuestionList.vue"], resolve);
 const JudgeList = resolve =>
@@ -50,7 +52,8 @@ export const menuList = [
     meta: {
       title: "主页",
       icon: "el-icon-s-home",
-      role: [constants.ROLE_ADMIN]
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
     }
   },
   {
@@ -60,7 +63,19 @@ export const menuList = [
     meta: {
       title: "学生列表",
       icon: "el-icon-s-grid",
-      role: [constants.ROLE_ADMIN]
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
+    }
+  },
+  {
+    path: "/admin/admins",
+    name: "admins",
+    component: AdminList,
+    meta: {
+      title: "管理员列表",
+      icon: "el-icon-s-grid",
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL]
     }
   },
   {
@@ -70,7 +85,8 @@ export const menuList = [
     meta: {
       title: "选择题列表",
       icon: "el-icon-s-grid",
-      role: [constants.ROLE_ADMIN]
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL]
     }
   },
   {
@@ -80,7 +96,8 @@ export const menuList = [
     meta: {
       title: "判断题列表",
       icon: "el-icon-s-grid",
-      role: [constants.ROLE_ADMIN]
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL]
     }
   },
   {
@@ -90,7 +107,8 @@ export const menuList = [
     meta: {
       title: "修改密码",
       icon: "el-icon-lock",
-      role: [constants.ROLE_ADMIN]
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
     }
   }
 ];
@@ -117,7 +135,8 @@ export const routes = [
     component: AdminHome,
     children: menuList,
     meta: {
-      role: [constants.ROLE_ADMIN]
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
     }
   },
   {
@@ -189,13 +208,7 @@ router.beforeEach(async (to, from, next) => {
   const status = store.state.user.status;
 
   if (
-    to.meta.role.some(r => r == constants.ROLE_ADMIN) &&
-    role == constants.ROLE_ADMIN
-  )
-    return next();
-  if (
-    to.meta.role.some(r => r == constants.ROLE_STUDENT) &&
-    role == constants.ROLE_STUDENT &&
+    to.meta.role.some(r => r == role) &&
     to.meta.status.some(s => s == status)
   )
     return next();

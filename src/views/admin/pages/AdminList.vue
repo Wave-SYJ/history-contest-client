@@ -60,28 +60,24 @@
       <el-table
         height="100%"
         v-loading="loading"
-        :data="questionList"
+        :data="adminList"
         tooltip-effect="dark"
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column type="selection" width="30"> </el-table-column>
-        <el-table-column prop="question" label="问题" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column prop="choiceA" label="选项 1" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column prop="choiceB" label="选项 2" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column prop="choiceC" label="选项 3" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column prop="choiceD" label="选项 4" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column label="答案">
+        <el-table-column prop="cardId" label="账号"> </el-table-column>
+        <el-table-column label="院系">
           <template slot-scope="scope">
-            选项 {{ scope.row.answer + 1 }}
+            {{
+              scope.row.status == constants.STATUS_ALL
+                ? "（无）"
+                : getDepartmentById(scope.row.department)
+            }}
           </template>
         </el-table-column>
+        <el-table-column prop="name" label="姓名"> </el-table-column>
         <el-table-column label="操作" width="175">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -91,48 +87,41 @@
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
+              :disabled="scope.row.status == constants.STATUS_ALL"
               >删除</el-button
             >
           </template>
         </el-table-column>
       </el-table>
     </el-main>
-    <el-footer style="margin: 10px auto; height: auto">
-      <el-pagination
-        @size-change="getQuestionList"
-        @current-change="getQuestionList"
-        :current-page.sync="currentPage"
-        :page-sizes="[50, 100, 150, 200]"
-        :page-size.sync="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
-    </el-footer>
 
     <el-dialog title="添加/编辑" :visible.sync="dialogVisible">
       <el-form :model="editData">
-        <el-form-item label="问题">
-          <el-input v-model="editData.question" autocomplete="off"></el-input>
+        <el-form-item label="账号">
+          <el-input
+            v-model="editData.cardId"
+            autocomplete="off"
+            :disabled="editData.status == constants.STATUS_ALL"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="选项 1">
-          <el-input v-model="editData.choiceA" autocomplete="off"></el-input>
+        <el-form-item label="姓名">
+          <el-input v-model="editData.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="选项 2">
-          <el-input v-model="editData.choiceB" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="选项 3">
-          <el-input v-model="editData.choiceC" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="选项 4">
-          <el-input v-model="editData.choiceD" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="答案">
-          <el-select v-model="editData.answer" placeholder="请选择答案">
-            <el-option label="选项 1" :value="0"></el-option>
-            <el-option label="选项 2" :value="1"></el-option>
-            <el-option label="选项 3" :value="2"></el-option>
-            <el-option label="选项 4" :value="3"></el-option>
+
+        <el-form-item label="院系">
+          <el-select
+            v-model="editData.department"
+            placeholder="请选择"
+            style="width: 100%"
+            :disabled="editData.status == constants.STATUS_ALL"
+          >
+            <el-option
+              v-for="item in constants.DEPARTMENT"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -151,23 +140,20 @@
 </template>
 
 <script>
-import choiceApi from "@/api/choiceQuestion";
+import userApi from "@/api/user";
 import constants from "@/constants";
+import { getDepartmentById } from "@/utils/department";
 
 export default {
   data() {
     return {
-      questionList: [],
+      adminList: [],
       constants,
       dialogVisible: false,
       editting: false, // true 表示 inserting
       editData: {},
       loading: false,
       multipleSelection: [],
-
-      pageSize: 50,
-      total: 0,
-      currentPage: 1,
 
       dropdownLoading: false,
       uploadType: ""
@@ -179,21 +165,13 @@ export default {
     }
   },
   created() {
-    this.getQuestionList();
+    this.getAdminList();
   },
   methods: {
+    getDepartmentById,
     handleDeleteCmd(command) {
       if (command == "selected") this.deleteSelectedRow();
       else this.deleteAll();
-    },
-    async deleteAll() {
-      await this.$confirm("此操作将永久删除所有记录, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      });
-      await choiceApi.deleteAll();
-      this.getQuestionList();
     },
     async upload() {
       this.dropdownLoading = true;
@@ -205,11 +183,11 @@ export default {
       );
       try {
         if (this.uploadType == "insert")
-          await choiceApi.importAndInsert(formData);
-        else await choiceApi.importAndCover(formData);
+          await userApi.importAdminAndInsert(formData);
+        else await userApi.importAdminAndCover(formData);
       } finally {
         this.dropdownLoading = false;
-        this.getQuestionList();
+        this.getAdminList();
       }
     },
     async handleDropdown(command) {
@@ -219,15 +197,6 @@ export default {
           this.uploadType = "insert";
           document.getElementById("uploadInput").click();
         } else {
-          await this.$confirm(
-            "此操作将永久删除所有记录后再添加, 是否继续?",
-            "提示",
-            {
-              confirmButtonText: "确定",
-              cancelButtonText: "取消",
-              type: "warning"
-            }
-          );
           this.uploadType = "cover";
           document.getElementById("uploadInput").click();
         }
@@ -244,19 +213,21 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       });
-      await choiceApi.deleteQuestions(
-        this.multipleSelection.map(value => value.id)
-      );
-      this.getQuestionList();
+      await userApi.deleteAdmins(this.multipleSelection.map(value => value.id));
+      this.getAdminList();
     },
-    async getQuestionList() {
+    async deleteAll() {
+      await this.$confirm("此操作将永久删除所有记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
+      await userApi.deleteAllAdmin();
+      this.getAdminList();
+    },
+    async getAdminList() {
       this.loading = true;
-      const res = await choiceApi.getQuestionPage(
-        this.currentPage,
-        this.pageSize
-      );
-      this.questionList = res.list;
-      this.total = res.total;
+      this.adminList = await userApi.getAdminList();
       this.loading = false;
     },
     handleInsert() {
@@ -275,21 +246,25 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       });
-      await choiceApi.deleteQuestion(row.id);
+      await userApi.deleteAdmin(row.id);
       this.$message({
         type: "success",
         message: "删除成功!"
       });
-      this.getQuestionList();
+      this.getAdminList();
     },
     async submitEdit() {
       if (this.editting) {
-        await choiceApi.editQuestion(this.editData);
+        if (this.editData.status == constants.STATUS_ALL)
+          this.editData.department = -1;
+        await userApi.editAdmin(this.editData);
+        if (this.editData.status == constants.STATUS_ALL)
+          this.$store.dispatch("user/getInfo");
       } else {
         this.editData.id = null;
-        await choiceApi.insertQuestion(this.editData);
+        await userApi.insertAdmin(this.editData);
       }
-      this.getQuestionList();
+      this.getAdminList();
       this.editting = false;
       this.dialogVisible = false;
     }

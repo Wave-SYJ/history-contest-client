@@ -188,6 +188,16 @@ export default {
           this.uploadType = "insert";
           document.getElementById("uploadInput").click();
         } else {
+          await this.$confirm(
+            "此操作将永久删除所有记录后再添加, 是否继续?",
+            "提示",
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }
+          );
+
           this.uploadType = "cover";
           document.getElementById("uploadInput").click();
         }
