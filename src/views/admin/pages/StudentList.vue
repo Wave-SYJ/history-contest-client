@@ -64,7 +64,6 @@
         <el-col :span="4">
           <el-select
             placeholder="查询类别"
-            :disabled="this.loading"
             v-model="queryForm.type"
             @change="queryForm.value = ''"
           >
@@ -81,7 +80,6 @@
             v-model="queryForm.value"
             placeholder="请选择"
             style="width: 100%"
-            :disabled="this.loading"
           >
             <el-option label="已提交" :value="constants.STATUS_SUBMITTED">
             </el-option>
@@ -93,7 +91,6 @@
             v-model="queryForm.value"
             placeholder="请选择"
             style="width: 100%"
-            :disabled="this.loading"
           >
             <el-option
               v-for="item in constants.DEPARTMENT"
@@ -108,7 +105,6 @@
             placeholder="值"
             v-model="queryForm.value"
             style="width: 100%"
-            :disabled="this.loading"
           ></el-input>
         </el-col>
         <el-col :span="4">
