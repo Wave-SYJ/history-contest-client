@@ -2,6 +2,7 @@ import { getToken, setToken } from "@/utils/storage";
 import authApi from "@/api/auth";
 import userApi from "@/api/user";
 import { getDepartmentBySid } from "@/utils/department";
+import constants from "@/constants";
 
 const user = {
   namespaced: true,
@@ -27,7 +28,10 @@ const user = {
       state.cardId = info.cardId || state.cardId;
       state.role = info.role || state.role;
       state.status = info.status || state.status;
-      if (info.department) state.department = getDepartmentBySid(info.sid);
+      if (info.department)
+        if (state.role != constants.ROLE_ADMIN)
+          state.department = getDepartmentBySid(info.sid);
+        else state.department = info.department;
     },
     CLEAR_INFO: state => {
       state.token = getToken();

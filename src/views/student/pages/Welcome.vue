@@ -62,8 +62,8 @@
     <div class="welcome" v-else v-loading="loading">
       <div class="card">
         <h3>欢迎您，{{ userInfo.name }} 同学！</h3>
-        <p>您的得分：</p>
-        <p style="font-size: 4rem">{{ score }}</p>
+        <p>您的成绩：</p>
+        <p style="font-size: 4rem; color: red">{{ score }}</p>
         <el-button type="primary" @click="onGetDetails">
           查看详情
         </el-button>

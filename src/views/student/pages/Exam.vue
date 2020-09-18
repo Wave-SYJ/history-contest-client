@@ -201,7 +201,6 @@ export default {
         });
         this.$router.replace("/student/details");
       } catch (error) {
-        this.$message.error("提交失败，请重试");
         this.submitting = false;
       }
     },
@@ -398,5 +397,10 @@ export default {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 12px #ebedf0;
+}
+
+.van-radio {
+  text-align: left;
+  margin-bottom: 0.2rem;
 }
 </style>

@@ -39,6 +39,7 @@
 import { removeToken } from "@/utils/storage";
 import constants from "@/constants.js";
 import { menuList } from "@/router";
+import { getDepartmentById } from "@/utils/department";
 
 export default {
   data() {
@@ -61,13 +62,9 @@ export default {
       return this.$store.state.user;
     },
     userRole() {
-      switch (this.userInfo.role) {
-        case constants.ROLE_STUDENT:
-          return "学生";
-        case constants.ROLE_ADMIN:
-          return "管理员";
-      }
-      return "";
+      if (this.userInfo.status == constants.STATUS_ALL) return "管理员";
+      console.log(constants);
+      return getDepartmentById(this.userInfo.department) + "管理员";
     },
     menuList() {
       const res = menuList.filter(

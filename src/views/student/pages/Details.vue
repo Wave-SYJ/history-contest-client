@@ -276,6 +276,8 @@ export default {
         .van-radio {
           line-height: 2rem;
           min-height: 1.7rem;
+          text-align: left;
+          margin-bottom: 0.2rem;
         }
       }
     }
