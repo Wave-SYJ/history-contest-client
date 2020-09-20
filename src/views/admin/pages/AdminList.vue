@@ -66,7 +66,12 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="index" width="50"> </el-table-column>
-        <el-table-column type="selection" width="30"> </el-table-column>
+        <el-table-column
+          type="selection"
+          width="30"
+          :selectable="row => row.status != constants.STATUS_ALL"
+        >
+        </el-table-column>
         <el-table-column prop="cardId" label="账号"> </el-table-column>
         <el-table-column label="院系">
           <template slot-scope="scope">

@@ -119,6 +119,12 @@ export default {
       data: ids
     });
   },
+  deleteAllAdmin() {
+    return request({
+      url: "user/admin/all",
+      method: "delete"
+    });
+  },
   getAdminList() {
     return request({
       url: "/user/admin/list",
