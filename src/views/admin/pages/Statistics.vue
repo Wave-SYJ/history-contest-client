@@ -71,7 +71,7 @@ export default {
 
       statisticsList: [],
       timer: null,
-      refreshInterval: 10000,
+      refreshInterval: -1,
 
       exporting: false
     };

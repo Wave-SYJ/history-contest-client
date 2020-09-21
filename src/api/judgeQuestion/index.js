@@ -52,7 +52,8 @@ export default {
       method: "post",
       headers: {
         "Content-Type": "multipart/form-data"
-      }
+      },
+      timeout: 90000
     });
   },
   importAndCover(formData) {
@@ -62,7 +63,8 @@ export default {
       method: "post",
       headers: {
         "Content-Type": "multipart/form-data"
-      }
+      },
+      timeout: 90000
     });
   },
   getCount() {

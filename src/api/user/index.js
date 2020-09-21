@@ -81,7 +81,8 @@ export default {
       method: "post",
       headers: {
         "Content-Type": "multipart/form-data"
-      }
+      },
+      timeout: 90000
     });
   },
   importStudentAndCover(formData) {
@@ -91,7 +92,8 @@ export default {
       method: "post",
       headers: {
         "Content-Type": "multipart/form-data"
-      }
+      },
+      timeout: 90000
     });
   },
   getCount() {
@@ -153,7 +155,8 @@ export default {
       method: "post",
       headers: {
         "Content-Type": "multipart/form-data"
-      }
+      },
+      timeout: 90000
     });
   },
   importAdminAndCover(formData) {
@@ -163,7 +166,8 @@ export default {
       method: "post",
       headers: {
         "Content-Type": "multipart/form-data"
-      }
+      },
+      timeout: 90000
     });
   }
 };
