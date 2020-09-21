@@ -15,5 +15,7 @@ export function getDepartmentByPrefix(prefix) {
 }
 
 export function getDepartmentBySid(Sid) {
-  return getDepartmentByPrefix(Sid.substring(0, 2));
+  const tmp = getDepartmentByPrefix(Sid.substring(0, 2));
+  if (tmp != "无法识别") return tmp;
+  else return getDepartmentByPrefix(Sid.substring(0, 3));
 }
