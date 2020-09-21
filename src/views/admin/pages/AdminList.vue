@@ -41,6 +41,7 @@
           style="margin-left: 12px;"
           @command="handleDropdown"
           v-loading="dropdownLoading"
+          trigger="click"
         >
           <el-button>
             导入<i class="el-icon-arrow-down el-icon--right"></i>

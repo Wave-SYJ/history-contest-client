@@ -81,7 +81,7 @@ export default {
           const push =
             this.$store.state.user.role === constants.ROLE_STUDENT
               ? "/student/home"
-              : "/admin/students";
+              : "/admin/home";
 
           this.$router.push({ path: this.redirect || push });
         } finally {

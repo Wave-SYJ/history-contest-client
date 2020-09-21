@@ -47,13 +47,13 @@ const ChangePassword = resolve =>
 export const menuList = [
   {
     path: "/admin/statistics",
-    name: "students",
+    name: "statistics",
     component: Statistics,
     meta: {
       title: "院系统计",
       icon: "el-icon-s-data",
       role: [constants.ROLE_ADMIN],
-      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
+      status: [constants.STATUS_ALL]
     }
   },
   {

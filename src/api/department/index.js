@@ -6,5 +6,16 @@ export default {
       url: "/department",
       method: "get"
     });
+  },
+  getStatistics() {
+    return request({
+      url: "/department/statistics",
+      method: "get"
+    });
+  },
+  exportDepartmentStatistics() {
+    return request.get("department/export", {
+      responseType: "blob"
+    });
   }
 };
