@@ -47,7 +47,11 @@
       <div class="card">
         <van-cell :title="`#${$route.params.id} ${currentType}（${score}分）`">
           <template #default>
-            <van-count-down :time="remainTime" @finish="submit">
+            <van-count-down
+              :time="remainTime"
+              @finish="submit"
+              v-show="!loading"
+            >
               <template #default="timeData">
                 <span class="block">{{
                   formatTimeNumber(timeData.hours)
@@ -235,7 +239,11 @@ export default {
       this.loading = false;
       if (this.userInfo.status === constants.STATUS_GENERATED) {
         this.paper.startTime = new Date();
-        await paperApi.calibrateTime(this.paper.startTime);
+        try {
+          await paperApi.calibrateTime(this.paper.startTime);
+        } catch (e) {
+          this.$router.replace("/student/index");
+        }
         this.$store.commit("user/SET_INFO", {
           status: constants.STATUS_STARTED
         });

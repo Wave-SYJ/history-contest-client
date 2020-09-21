@@ -31,6 +31,8 @@ const Exam = resolve => require(["@/views/student/pages/Exam.vue"], resolve);
 const Details = resolve =>
   require(["@/views/student/pages/Details.vue"], resolve);
 
+const Statistics = resolve =>
+  require(["@/views/admin/pages/Statistics.vue"], resolve);
 const StudentList = resolve =>
   require(["@/views/admin/pages/StudentList.vue"], resolve);
 const AdminList = resolve =>
@@ -43,6 +45,17 @@ const ChangePassword = resolve =>
   require(["@/views/admin/pages/ChangePassword.vue"], resolve);
 
 export const menuList = [
+  {
+    path: "/admin/statistics",
+    name: "students",
+    component: Statistics,
+    meta: {
+      title: "院系统计",
+      icon: "el-icon-s-data",
+      role: [constants.ROLE_ADMIN],
+      status: [constants.STATUS_ALL, constants.STATUS_DEPARTMENT]
+    }
+  },
   {
     path: "/admin/students",
     name: "students",
@@ -118,7 +131,7 @@ export const routes = [
   {
     path: "/admin/home",
     name: "admin-home",
-    redirect: "/admin/index",
+    redirect: "/admin/statistics",
     component: AdminHome,
     children: menuList,
     meta: {

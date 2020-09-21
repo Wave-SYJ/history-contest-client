@@ -207,6 +207,7 @@ export default {
         if (this.uploadType == "insert")
           await choiceApi.importAndInsert(formData);
         else await choiceApi.importAndCover(formData);
+        this.$message.info("导入成功，如果页面没有变化，请稍等后刷新");
       } finally {
         this.dropdownLoading = false;
         this.getQuestionList();
