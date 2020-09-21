@@ -36,7 +36,15 @@
             {{ scope.row.submittedPerson }} / {{ scope.row.totalPerson }}
           </template>
         </el-table-column>
-        <el-table-column label="平均分（不含未提交）" align="center" sortable>
+        <el-table-column
+          label="平均分（不含未提交）"
+          align="center"
+          sortable
+          :sort-by="
+            row =>
+              row.submittedPerson ? row.totalScore / row.submittedPerson : 0
+          "
+        >
           <template slot-scope="scope">
             {{
               scope.row.submittedPerson
@@ -45,7 +53,14 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column label="平均分（含未提交）" align="center" sortable>
+        <el-table-column
+          label="平均分（含未提交）"
+          align="center"
+          sortable
+          :sort-by="
+            row => (row.totalPerson ? row.totalScore / row.totalPerson : 0)
+          "
+        >
           <template slot-scope="scope">
             {{
               scope.row.totalPerson
