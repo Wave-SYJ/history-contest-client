@@ -1,22 +1,20 @@
 <template>
   <el-container style="height: 100%;">
     <el-header>
-      <el-row :gutter="12">
-        <el-col :span="10">
-          <el-form :inline="true">
-            <el-form-item label="自动刷新">
-              <el-select v-model="refreshInterval" @change="startTimer">
-                <el-option label="10 秒 / 次" :value="10000"></el-option>
-                <el-option label="30 秒 / 次" :value="30000"></el-option>
-                <el-option label="1 分钟 / 次" :value="60000"></el-option>
-                <el-option label="关闭" :value="-1"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-button icon="el-icon-refresh" @click="refresh"></el-button>
-            <el-button @click="onExport" :loading="exporting">导出</el-button>
-          </el-form>
-        </el-col>
-      </el-row>
+      <el-form :inline="true">
+        <el-form-item label="自动刷新">
+          <el-select v-model="refreshInterval" @change="startTimer">
+            <el-option label="10 秒 / 次" :value="10000"></el-option>
+            <el-option label="30 秒 / 次" :value="30000"></el-option>
+            <el-option label="1 分钟 / 次" :value="60000"></el-option>
+            <el-option label="关闭" :value="-1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-refresh" @click="refresh"></el-button>
+          <el-button @click="onExport" :loading="exporting">导出</el-button>
+        </el-form-item>
+      </el-form>
     </el-header>
 
     <el-main style="padding: 0">
