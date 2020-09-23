@@ -70,7 +70,7 @@ export default {
         ],
         newPassword: [
           { validator: validatePass, trigger: "blur" },
-          { required: true, message: "请输入原密码", trigger: "blur" },
+          { required: true, message: "请输入新密码", trigger: "blur" },
           {
             min: 6,
             max: 18,
