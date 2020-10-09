@@ -130,7 +130,7 @@
         <el-table-column type="selection" width="30"> </el-table-column>
         <el-table-column prop="sid" label="学号"> </el-table-column>
         <el-table-column prop="cardId" label="一卡通号"> </el-table-column>
-        <el-table-column label="院系">
+        <el-table-column label="院系" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ getDepartmentById(scope.row.department) }}
           </template>

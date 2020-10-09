@@ -27,7 +27,12 @@
       >
         <el-table-column type="index" width="50" align="right">
         </el-table-column>
-        <el-table-column prop="department.name" label="院系" sortable>
+        <el-table-column
+          prop="department.name"
+          label="院系"
+          sortable
+          show-overflow-tooltip
+        >
         </el-table-column>
         <el-table-column label="提交人数 / 总人数" align="center">
           <template slot-scope="scope">
